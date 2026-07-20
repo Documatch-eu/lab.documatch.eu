@@ -1,0 +1,75 @@
+@import "tailwindcss";
+
+/* Hide scrollbar for Chrome, Safari, Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+/* --- OPTIMIZED PRINT/PDF STYLES FOR MOBILE & DESKTOP --- */
+@media print {
+  /* Force a standard width so that mobile and desktop print engines render a beautiful, consistent layout */
+  html, body, #root, main {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    width: 820px !important;
+    min-width: 820px !important;
+    max-width: 820px !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  /* Reset layout constraints and shadows for paper */
+  section {
+    background-color: #ffffff !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+    border: none !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Force responsive grid systems to preserve multi-column desktop layouts even on mobile viewports */
+  .grid {
+    display: grid !important;
+  }
+
+  /* Force 3 columns on the axes scores grid precisely */
+  .print-axes-grid {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
+  }
+
+  /* Force 2 columns on the printable lead metadata table precisely */
+  .print-metadata-grid {
+    display: grid !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+
+  /* Adjust gap spacing to fit on letter/A4 pages cleanly */
+  .gap-4 {
+    gap: 0.75rem !important;
+  }
+
+  /* Avoid cutting off cards mid-page */
+  .page-break-inside-avoid {
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+  }
+
+  /* Page setup (A4 standard portrait with safe margin settings) */
+  @page {
+    size: A4 portrait;
+    margin: 15mm 15mm 15mm 15mm;
+  }
+}

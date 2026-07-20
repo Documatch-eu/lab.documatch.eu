@@ -1,0 +1,6 @@
+{
+  "name": "Documatch Lab",
+  "description": "Évaluez gratuitement la maturité de votre système GED face aux nouvelles obligations de facturation électronique et d'archivage réglementaire 2026 (France, Espagne, Allemagne, Pays-Bas).",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
