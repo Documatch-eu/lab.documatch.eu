@@ -119,7 +119,11 @@ app.post("/api/submit-form", async (req, res) => {
     // 3. Send via Resend (Server-side secure proxy)
     let resendSuccess = false;
     let resendError = null;
-    const resendApiKey = process.env.RESEND_API_KEY || "re_Co1giFQb_GpvTNJjuXjd4Wo33hmNRMipX";
+    const resendApiKey = process.env.RESEND_API_KEY;
+
+    if (!resendApiKey) {
+      console.error("❌ [RESEND ERROR] RESEND_API_KEY environment variable is missing.");
+    }
 
     // Determine localized text templates
     const t = {
@@ -456,13 +460,18 @@ app.post("/api/submit-form", async (req, res) => {
     let emailSentToUser = false;
 
     const sendResendEmail = async (toEmail: string, emailSubject: string, htmlContentStr: string, replyToEmail?: string) => {
+      if (!resendApiKey) {
+        console.error(`❌ Cannot send email to ${toEmail}: RESEND_API_KEY environment variable is not defined.`);
+        return { ok: false, status: 401, json: async () => ({ error: "RESEND_API_KEY environment variable is missing" }) } as Response;
+      }
+
       const primaryFrom = "Documatch <noreply@documatch.eu>";
       const fallbackFrom = "Documatch Lab <onboarding@resend.dev>";
 
       const emailPayload: any = {
         from: primaryFrom,
         to: toEmail,
-        reply_to: replyToEmail,
+        reply_to: replyToEmail || undefined,
         subject: emailSubject,
         html: htmlContentStr,
       };
@@ -478,7 +487,19 @@ app.post("/api/submit-form", async (req, res) => {
 
       if (!res.ok) {
         const errJson = await res.json().catch(() => ({}));
-        console.warn(`Primary domain resend to ${toEmail} failed, retrying with onboarding domain:`, errJson);
+        const errMsg = errJson.message || errJson.name || JSON.stringify(errJson);
+
+        if (res.status === 401) {
+          console.error(`❌ Resend API Key is invalid or revoked (401): ${errMsg}`);
+          return {
+            ok: false,
+            status: 401,
+            json: async () => errJson,
+          } as Response;
+        }
+
+        console.warn(`Primary domain (noreply@documatch.eu) send to ${toEmail} failed (${errMsg}). Retrying with onboarding@resend.dev...`);
+        
         emailPayload.from = fallbackFrom;
         res = await fetch("https://api.resend.com/emails", {
           method: "POST",
@@ -488,6 +509,17 @@ app.post("/api/submit-form", async (req, res) => {
           },
           body: JSON.stringify(emailPayload),
         });
+
+        if (!res.ok) {
+          const fallbackErrJson = await res.json().catch(() => ({}));
+          const fallbackErrMsg = fallbackErrJson.message || fallbackErrJson.name || JSON.stringify(fallbackErrJson);
+          console.error(`❌ Resend fallback send to ${toEmail} failed (${fallbackErrMsg})`);
+          return {
+            ok: false,
+            status: res.status,
+            json: async () => fallbackErrJson,
+          } as Response;
+        }
       }
       return res;
     };
@@ -512,7 +544,7 @@ app.post("/api/submit-form", async (req, res) => {
       console.error("Resend user error:", e);
     }
 
-    resendSuccess = emailSentToOwner;
+    resendSuccess = emailSentToOwner || emailSentToUser;
 
     return res.json({
       success: true,
@@ -547,6 +579,11 @@ async function startServer() {
 
   app.listen(PORT, "0.0.0.0", () => {
     console.log(`Server running on port ${PORT}`);
+    if (!process.env.RESEND_API_KEY) {
+      console.warn("⚠️ [WARNING] RESEND_API_KEY is missing from environment variables. Emails will fail until RESEND_API_KEY is configured.");
+    } else {
+      console.log("✅ [RESEND] RESEND_API_KEY is configured in process.env.");
+    }
   });
 }
 
