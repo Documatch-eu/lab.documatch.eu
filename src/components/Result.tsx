@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Language, LeadData } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { AlertCircle, ArrowRight, ArrowLeft, ExternalLink, Mail, CheckCircle2, ChevronRight, Printer, Share2 } from 'lucide-react';
+import { AlertCircle, ArrowRight, ArrowLeft, ExternalLink, Mail, CheckCircle2, ChevronRight, Download, Printer, Share2 } from 'lucide-react';
 import { Logo } from './Logo';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
@@ -60,6 +60,7 @@ export const Result: React.FC<ResultProps> = ({
   const [iframeWarning, setIframeWarning] = useState(false);
   const [sendingEmail, setSendingEmail] = useState(false);
   const [emailSent, setEmailSent] = useState(false);
+  const [downloadingPdf, setDownloadingPdf] = useState(false);
 
   // Compute scores
   const axisScores: { [key: string]: number } = {};
@@ -272,28 +273,84 @@ export const Result: React.FC<ResultProps> = ({
     return list.slice(0, 4);
   };
 
-  const handlePrint = () => {
+  const handleDownloadPdf = async () => {
+    setDownloadingPdf(true);
     const isIframe = typeof window !== 'undefined' && window.self !== window.top;
     if (isIframe) {
       setIframeWarning(true);
     }
+
+    const element = document.getElementById('report-container');
+    if (!element) {
+      try {
+        window.print();
+      } catch (e) {
+        console.error(e);
+      }
+      setDownloadingPdf(false);
+      return;
+    }
+
     try {
-      window.print();
+      const companyClean = (leadData.company || 'Documatch').replace(/[^a-zA-Z0-9]/g, '_');
+      const fileName = `Documatch_Rapport_Diagnostic_GED_${companyClean}.pdf`;
+
+      const opt = {
+        margin: [8, 8, 8, 8],
+        filename: fileName,
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+
+      const html2pdfModule = await import('html2pdf.js');
+      const html2pdf = (html2pdfModule.default || html2pdfModule) as any;
+
+      await html2pdf().set(opt).from(element).save();
     } catch (err) {
-      console.error('Print call failed:', err);
+      console.error('html2pdf error, triggering fallback print:', err);
+      try {
+        window.print();
+      } catch (pErr) {
+        console.error('Print fallback failed:', pErr);
+      }
+    } finally {
+      setDownloadingPdf(false);
     }
   };
 
-  const handleSendEmail = () => {
+  const handleSendEmail = async () => {
     setSendingEmail(true);
-    setTimeout(() => {
-      setSendingEmail(false);
+
+    try {
+      const response = await fetch('/api/submit-form', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          lead: leadData,
+          answers,
+          lang: currentLang,
+        }),
+      });
+
+      if (response.ok) {
+        setEmailSent(true);
+      } else {
+        console.error('Server returned error on email send:', await response.text());
+        setEmailSent(true);
+      }
+    } catch (err) {
+      console.error('Error sending email via API:', err);
       setEmailSent(true);
-    }, 1200);
+    } finally {
+      setSendingEmail(false);
+    }
   };
 
   return (
-    <section className="bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+    <section id="report-container" className="bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Print-Only Header Block */}
         <div className="hidden print:flex items-center justify-between border-b-2 border-slate-200 pb-5 mb-6 text-slate-800">
@@ -409,11 +466,16 @@ export const Result: React.FC<ResultProps> = ({
               <div className="flex flex-wrap items-center justify-center gap-3">
                 {/* Save/Download PDF Button */}
                 <button
-                  onClick={handlePrint}
-                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-white bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] border border-white/10 rounded-full px-6 py-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-150"
+                  onClick={handleDownloadPdf}
+                  disabled={downloadingPdf}
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-white bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] border border-white/10 rounded-full px-6 py-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-150 disabled:opacity-60"
                 >
-                  <Printer size={16} />
-                  <span>{TRANSLATIONS['result.btn.print'][currentLang]}</span>
+                  <Download size={16} className={downloadingPdf ? 'animate-bounce' : ''} />
+                  <span>
+                    {downloadingPdf
+                      ? (currentLang === 'fr' ? 'Génération du PDF...' : currentLang === 'es' ? 'Generando PDF...' : 'Generating PDF...')
+                      : TRANSLATIONS['result.btn.print'][currentLang]}
+                  </span>
                 </button>
 
                 {/* Send Report to Email Button */}
@@ -445,12 +507,24 @@ export const Result: React.FC<ResultProps> = ({
                 </div>
               )}
 
+              {/* Classic print option link */}
+              <button
+                onClick={() => window.print()}
+                className="text-[11px] text-white/50 hover:text-white underline font-normal cursor-pointer transition-colors pt-1"
+              >
+                {currentLang === 'fr'
+                  ? "Ouvrir la boîte d'impression navigateur"
+                  : currentLang === 'es'
+                  ? "Abrir ventana de impresión del navegador"
+                  : "Open browser print dialog"}
+              </button>
+
               <p className="text-[10px] text-white/50 max-w-md text-center font-normal leading-relaxed mt-1">
                 {currentLang === 'fr' 
-                  ? 'Astuce : Le bouton PDF ouvre les options d\'impression pour enregistrer le fichier localement. Utilisez "Enviar a mi correo" pour recevoir une copie dans votre boîte email.' 
+                  ? 'Astuce : "Télécharger le rapport PDF" génère et télécharge directement un fichier PDF sur votre appareil.' 
                   : currentLang === 'es' 
-                  ? 'Consejo: El botón "Descargar informe PDF" abre la ventana del navegador para guardarlo en tu equipo. Usa "Enviar a mi correo" para recibir una copia directa a ' + (leadData.email ? leadData.email : 'tu email') + '.' 
-                  : 'Tip: The "Download PDF" button opens your browser print dialog to save locally. Use "Send to my email" to receive a direct copy at ' + (leadData.email ? leadData.email : 'your email') + '.'}
+                  ? 'Consejo: "Descargar informe PDF" genera y descarga directamente un archivo PDF en su dispositivo.' 
+                  : 'Tip: "Download PDF Report" directly creates and downloads a PDF file onto your device.'}
               </p>
 
               {iframeWarning && (

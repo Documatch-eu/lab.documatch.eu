@@ -23,8 +23,7 @@ export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
       <img
         src={documatchLogo}
         alt="Documatch Lab Logo"
-        // Crop out the outer metallic border frame perfectly by scaling the image up and hiding the overflow
-        className="w-full h-full object-cover scale-[1.32] select-none"
+        className="w-full h-full object-contain select-none rounded-xl"
         referrerPolicy="no-referrer"
       />
     </div>
