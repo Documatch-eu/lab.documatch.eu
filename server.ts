@@ -119,7 +119,7 @@ app.post("/api/submit-form", async (req, res) => {
     // 3. Send via Resend (Server-side secure proxy)
     let resendSuccess = false;
     let resendError = null;
-    const resendApiKey = process.env.RESEND_API_KEY || "re_Co1giFQb_GpvTNJjuXjd4W...";
+    const resendApiKey = process.env.RESEND_API_KEY || "re_Co1giFQb_GpvTNJjuXjd4Wo33hmNRMipX";
 
     // Determine localized text templates
     const t = {
