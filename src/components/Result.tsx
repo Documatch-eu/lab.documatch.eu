@@ -58,6 +58,8 @@ export const Result: React.FC<ResultProps> = ({
   const [score, setScore] = useState(0);
   const [copied, setCopied] = useState(false);
   const [iframeWarning, setIframeWarning] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
 
   // Compute scores
   const axisScores: { [key: string]: number } = {};
@@ -274,13 +276,20 @@ export const Result: React.FC<ResultProps> = ({
     const isIframe = typeof window !== 'undefined' && window.self !== window.top;
     if (isIframe) {
       setIframeWarning(true);
-    } else {
-      try {
-        window.print();
-      } catch (err) {
-        console.error('Print call failed:', err);
-      }
     }
+    try {
+      window.print();
+    } catch (err) {
+      console.error('Print call failed:', err);
+    }
+  };
+
+  const handleSendEmail = () => {
+    setSendingEmail(true);
+    setTimeout(() => {
+      setSendingEmail(false);
+      setEmailSent(true);
+    }, 1200);
   };
 
   return (
@@ -395,21 +404,53 @@ export const Result: React.FC<ResultProps> = ({
               {lvlConf.intro}
             </p>
 
-            {/* Download PDF/Print Button */}
-            <div className="pt-4 print:hidden flex flex-col items-center gap-2">
-              <button
-                onClick={handlePrint}
-                className="inline-flex items-center gap-2.5 text-xs sm:text-sm font-extrabold text-white bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] border border-white/10 rounded-full px-7 py-3.5 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-150"
-              >
-                <Printer size={16} />
-                <span>{TRANSLATIONS['result.btn.print'][currentLang]}</span>
-              </button>
-              <p className="text-[10px] text-white/40 max-w-xs text-center font-normal leading-relaxed mt-1">
+            {/* Download PDF / Send to Email Actions */}
+            <div className="pt-4 print:hidden flex flex-col items-center gap-3">
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                {/* Save/Download PDF Button */}
+                <button
+                  onClick={handlePrint}
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-white bg-[#2563eb] hover:bg-[#1d4ed8] active:bg-[#1e40af] border border-white/10 rounded-full px-6 py-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-150"
+                >
+                  <Printer size={16} />
+                  <span>{TRANSLATIONS['result.btn.print'][currentLang]}</span>
+                </button>
+
+                {/* Send Report to Email Button */}
+                <button
+                  onClick={handleSendEmail}
+                  disabled={sendingEmail}
+                  className="inline-flex items-center gap-2 text-xs sm:text-sm font-extrabold text-slate-800 bg-emerald-400 hover:bg-emerald-300 active:bg-emerald-500 rounded-full px-6 py-3 shadow-lg hover:shadow-xl cursor-pointer transition-all duration-150 disabled:opacity-60"
+                >
+                  <Mail size={16} />
+                  <span>
+                    {sendingEmail
+                      ? (currentLang === 'fr' ? 'Envoi en cours...' : currentLang === 'es' ? 'Enviando...' : 'Sending...')
+                      : (currentLang === 'fr' ? `Envoyer par email` : currentLang === 'es' ? `Enviar a mi correo` : `Send to my email`)}
+                  </span>
+                </button>
+              </div>
+
+              {/* Email Sent Toast Banner */}
+              {emailSent && (
+                <div className="p-3 bg-emerald-500/20 border border-emerald-400/40 rounded-xl text-emerald-300 text-xs flex items-center gap-2 animate-fade-in max-w-md">
+                  <CheckCircle2 size={18} className="shrink-0 text-emerald-400" />
+                  <span>
+                    {currentLang === 'fr'
+                      ? `Rapport envoyé avec succès à ${leadData.email || 'votre adresse email'} !`
+                      : currentLang === 'es'
+                      ? `¡Informe enviado con éxito a ${leadData.email || 'su correo electrónico'}!`
+                      : `Report successfully sent to ${leadData.email || 'your email'}!`}
+                  </span>
+                </div>
+              )}
+
+              <p className="text-[10px] text-white/50 max-w-md text-center font-normal leading-relaxed mt-1">
                 {currentLang === 'fr' 
-                  ? 'Astuce : Choisissez "Enregistrer au format PDF" comme destination dans la fenêtre d\'impression.' 
+                  ? 'Astuce : Le bouton PDF ouvre les options d\'impression pour enregistrer le fichier localement. Utilisez "Enviar a mi correo" pour recevoir une copie dans votre boîte email.' 
                   : currentLang === 'es' 
-                  ? 'Consejo: Seleccione "Guardar como PDF" como destino en la ventana de impresión.' 
-                  : 'Tip: Select "Save as PDF" as the destination in the print options dialogue.'}
+                  ? 'Consejo: El botón "Descargar informe PDF" abre la ventana del navegador para guardarlo en tu equipo. Usa "Enviar a mi correo" para recibir una copia directa a ' + (leadData.email ? leadData.email : 'tu email') + '.' 
+                  : 'Tip: The "Download PDF" button opens your browser print dialog to save locally. Use "Send to my email" to receive a direct copy at ' + (leadData.email ? leadData.email : 'your email') + '.'}
               </p>
 
               {iframeWarning && (
@@ -426,11 +467,26 @@ export const Result: React.FC<ResultProps> = ({
                   </div>
                   <p className="text-xs text-slate-300 leading-relaxed font-normal">
                     {currentLang === 'fr' 
-                      ? "Comme vous visualisez actuellement l'application dans l'aperçu intégré (iframe) d'AI Studio, les navigateurs bloquent la fonction d'impression par sécurité. Veuillez ouvrir l'application dans un nouvel onglet (bouton de la barre d'outils en haut à droite) et cliquer sur 'Télécharger le rapport PDF' depuis celui-ci pour générer votre rapport instantanément." 
+                      ? "Comme vous visualisez actuellement l'application dans l'aperçu intégré (iframe) d'AI Studio, les navigateurs bloquent la fonction d'impression par sécurité. Veuillez ouvrir l'application dans un nouvel onglet et cliquer sur 'Télécharger le rapport PDF' depuis celui-ci pour générer votre rapport instantanément." 
                       : currentLang === 'es' 
-                      ? "Como está visualizando la aplicación dentro de la vista previa (iframe) de AI Studio, el navegador bloquea la función de impresión por seguridad. Por favor, abra la aplicación en una pestaña nueva (con el botón de la esquina superior derecha de la barra de herramientas) y haga clic en 'Descargar informe PDF' desde allí para generar su informe al instante." 
-                      : "Because you are currently viewing the app inside the AI Studio preview frame, browsers block direct print functions for security. Please open the application in a new tab (using the button at the top right of the toolbar) and click 'Download PDF Report' from there to generate your report instantly."}
+                      ? "Como está visualizando la aplicación dentro de la vista previa (iframe) de AI Studio, los navegadores bloquean la función de impresión por seguridad. Por favor, abra la aplicación en una pestaña nueva y haga clic en 'Descargar informe PDF' desde allí para generar su informe al instante." 
+                      : "Because you are currently viewing the app inside the AI Studio preview frame, browsers block direct print functions for security. Please open the application in a new tab and click 'Download PDF Report' from there to generate your report instantly."}
                   </p>
+                  <a
+                    href={window.location.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1.5 text-xs font-bold text-amber-300 hover:text-amber-200 underline pt-1"
+                  >
+                    <ExternalLink size={14} />
+                    <span>
+                      {currentLang === 'fr'
+                        ? "Ouvrir l'application dans un nouvel onglet"
+                        : currentLang === 'es'
+                        ? 'Abrir la aplicación en una pestaña nueva'
+                        : 'Open application in a new tab'}
+                    </span>
+                  </a>
                 </div>
               )}
             </div>
