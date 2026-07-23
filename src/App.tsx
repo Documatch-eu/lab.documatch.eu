@@ -28,15 +28,8 @@ export default function App() {
     return 'fr';
   });
 
-  const [currentScreen, setCurrentScreen] = useState<'intro' | 'quiz' | 'lead' | 'result'>(() => {
-    try {
-      const saved = localStorage.getItem('documatch_screen');
-      if (saved && ['intro', 'quiz', 'lead', 'result'].includes(saved)) {
-        return saved as any;
-      }
-    } catch (e) {}
-    return 'intro';
-  });
+  // Always default currentScreen to 'intro' on initial load so the home page (Header & Hero) loads first
+  const [currentScreen, setCurrentScreen] = useState<'intro' | 'quiz' | 'lead' | 'result'>('intro');
 
   const [currentQ, setCurrentQ] = useState<number>(() => {
     try {
@@ -332,6 +325,14 @@ export default function App() {
   };
 
   const handleStartQuiz = () => {
+    try {
+      const saved = localStorage.getItem('documatch_screen');
+      if (saved && ['quiz', 'lead', 'result'].includes(saved)) {
+        setCurrentScreen(saved as any);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return;
+      }
+    } catch (e) {}
     setCurrentScreen('quiz');
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -456,6 +457,7 @@ export default function App() {
         currentLang={currentLang}
         onLanguageChange={handleLanguageChange}
         onOpenModal={handleOpenModal}
+        onHomeClick={handleClose}
       />
 
       {/* Main Screen Router */}

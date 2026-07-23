@@ -8,12 +8,14 @@ interface HeaderProps {
   currentLang: Language;
   onLanguageChange: (lang: Language) => void;
   onOpenModal: (id: string) => void;
+  onHomeClick?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
   currentLang,
   onLanguageChange,
   onOpenModal,
+  onHomeClick,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -55,7 +57,10 @@ export const Header: React.FC<HeaderProps> = ({
       {/* --- MAIN HEADER --- */}
       <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo */}
-        <a href="https://www.documatch.eu" className="flex items-center gap-1.5 sm:gap-2.5 decoration-transparent" target="_blank" rel="noopener noreferrer">
+        <button 
+          onClick={onHomeClick} 
+          className="flex items-center gap-1.5 sm:gap-2.5 decoration-transparent bg-transparent border-0 cursor-pointer text-left p-0"
+        >
           <Logo size="sm" />
           <div className="flex items-center">
             <span className="font-sans font-bold text-lg sm:text-2xl text-white leading-none tracking-tight">
@@ -65,7 +70,7 @@ export const Header: React.FC<HeaderProps> = ({
               LAB
             </span>
           </div>
-        </a>
+        </button>
 
         {/* Right Nav Controls */}
         <div className="flex items-center gap-2 sm:gap-5">
