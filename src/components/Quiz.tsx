@@ -156,7 +156,7 @@ export const Quiz: React.FC<QuizProps> = ({
           </span>
 
           <h2 className="font-sans font-extrabold text-lg sm:text-xl text-[#1e3a5f] leading-snug mb-2">
-            {getQuestionText()}
+            {getQuestionText().replace(/\s\?/g, '\u00A0?')}
           </h2>
 
           {getQuestionHint() && (

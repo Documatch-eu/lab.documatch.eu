@@ -8,7 +8,7 @@ interface WhySectionProps {
 
 export const WhySection: React.FC<WhySectionProps> = ({ currentLang }) => {
   const getTagText = () => {
-    if (currentLang === 'fr') return 'POURQUOI CE DIAGNOSTIC ?';
+    if (currentLang === 'fr') return 'POURQUOI CE DIAGNOSTIC\u00A0?';
     if (currentLang === 'es') return '¿POR QUÉ ESTE DIAGNÓSTICO?';
     if (currentLang === 'de') return 'WARUM DIESE DIAGNOSE?';
     if (currentLang === 'nl') return 'WAAROM DEZE ANALYSE?';
@@ -25,7 +25,7 @@ export const WhySection: React.FC<WhySectionProps> = ({ currentLang }) => {
 
   const getSubtitle = () => {
     if (currentLang === 'fr') {
-      return "À partir du 1er septembre 2026, la facturation électronique B2B devient obligatoire en France. Les organisations non conformes s'exposent à des pénalités financières et à un risque opérationnel majeur. Êtes-vous prêt ?";
+      return "À partir du 1er septembre 2026, la facturation électronique B2B devient obligatoire en France. Les organisations non conformes s'exposent à des pénalités financières et à un risque opérationnel majeur. Êtes-vous prêt\u00A0?";
     } else if (currentLang === 'es') {
       return "A partir del 2026, la facturación electrónica B2B será obligatoria en España (Ley Crea y Crece). Las empresas no preparadas se exponen a sanciones de hasta 10.000 € y riesgos operativos graves. ¿Está preparado?";
     } else if (currentLang === 'de') {

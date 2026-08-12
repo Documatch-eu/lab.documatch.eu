@@ -212,7 +212,7 @@ export const FAQ: React.FC<FAQProps> = ({ currentLang }) => {
                     <span className={`text-xs sm:text-sm font-extrabold leading-snug font-sans transition-colors ${
                       isOpen ? 'text-[#1d4ed8]' : 'text-[#122847]'
                     }`}>
-                      {item.question}
+                      {item.question.replace(/\s\?/g, '\u00A0?')}
                     </span>
                   </div>
                   <ChevronDown 

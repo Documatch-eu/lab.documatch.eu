@@ -15,37 +15,47 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
   const renderTitle = () => {
     if (currentLang === 'fr') {
       return (
-        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
-          Votre entreprise est-elle prête pour les <br />
-          <span className="text-[#fbbf24]">nouvelles obligations documentaires de 2026 ?</span>
+        <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Votre entreprise est-elle prête pour les <br className="hidden sm:inline" />
+          <span className="text-[#fbbf24]">
+            nouvelles obligations documentaires <span className="inline-block">de 2026&nbsp;?</span>
+          </span>
         </h1>
       );
     } else if (currentLang === 'es') {
       return (
-        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
-          ¿Está su empresa preparada para las <br />
-          <span className="text-[#fbbf24]">nuevas obligaciones documentales de 2026?</span>
+        <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          ¿Está su empresa preparada para las <br className="hidden sm:inline" />
+          <span className="text-[#fbbf24]">
+            nuevas obligaciones documentales <span className="inline-block">de 2026?</span>
+          </span>
         </h1>
       );
     } else if (currentLang === 'de') {
       return (
-        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
-          Ist Ihr Unternehmen bereit für die <br />
-          <span className="text-[#fbbf24]">neue E-Rechnungspflicht &amp; GoBD 2025/2026?</span>
+        <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Ist Ihr Unternehmen bereit für die <br className="hidden sm:inline" />
+          <span className="text-[#fbbf24]">
+            neue E-Rechnungspflicht &amp; GoBD <span className="inline-block">2025/2026?</span>
+          </span>
         </h1>
       );
     } else if (currentLang === 'nl') {
       return (
-        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
-          Is uw organisatie voorbereid op de <br />
-          <span className="text-[#fbbf24]">nieuwe verplichte E-invoicing 2026?</span>
+        <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Is uw organisatie voorbereid op de <br className="hidden sm:inline" />
+          <span className="text-[#fbbf24]">
+            nieuwe verplichte E-invoicing <span className="inline-block">2026?</span>
+          </span>
         </h1>
       );
     } else {
       return (
-        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
-          Is your company ready for the <br />
-          <span className="text-[#fbbf24]">new European document mandates of 2026?</span>
+        <h1 className="font-sans font-extrabold text-2xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Is your company ready for the <br className="hidden sm:inline" />
+          <span className="text-[#fbbf24]">
+            new European document mandates <span className="inline-block">of 2026?</span>
+          </span>
         </h1>
       );
     }
