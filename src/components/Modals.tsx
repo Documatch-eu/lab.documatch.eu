@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Language } from '../types';
+import { TRANSLATIONS } from '../data/translations';
 import { HelpCircle, ChevronDown } from 'lucide-react';
 
 interface ModalsProps {
@@ -52,7 +53,13 @@ export const Modals: React.FC<ModalsProps> = ({
               {currentLang === 'es' && (
                 <span>⚡ Ley Crea y Crece España : Facturación electrónica obligatoria para PYMES y autónomos desde <strong>enero de 2026</strong></span>
               )}
-              {currentLang === 'en' && (
+              {currentLang === 'de' && (
+                <span>⚡ E-Rechnungspflicht Deutschland : Verpflichtender B2B-Empfang seit <strong>1. Januar 2025</strong> (Wachstumschancengesetz)</span>
+              )}
+              {currentLang === 'nl' && (
+                <span>⚡ Verplichte E-invoicing Nederland : B2B-ontvangst via Peppol/UBL geharmoniseerd voor <strong>2026</strong></span>
+              )}
+              {(currentLang === 'en' || (!['fr', 'es', 'de', 'nl'].includes(currentLang))) && (
                 <span>⚡ GoBD &amp; Peppol Compliance : Mandatory B2B e-invoice reception starts in Germany on <strong>Jan 1, 2025</strong> and aligns with Netherlands standard</span>
               )}
             </div>
@@ -62,17 +69,21 @@ export const Modals: React.FC<ModalsProps> = ({
               <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.015)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.015)_1px,transparent_1px)] bg-[size:30px_30px]" />
               <div className="relative z-10 max-w-2xl">
                 <span className="inline-block text-[10px] font-extrabold tracking-widest text-[#fbbf24] uppercase bg-amber-500/10 border border-amber-500/20 rounded px-2.5 py-1 mb-3">
-                  {currentLang === 'fr' ? 'GUIDE CONFORMITÉ' : currentLang === 'es' ? 'GUÍA CONFORMIDAD' : 'EU COMPLIANCE GUIDE'}
+                  {currentLang === 'fr' ? 'GUIDE CONFORMITÉ' : currentLang === 'es' ? 'GUÍA CONFORMIDAD' : currentLang === 'de' ? 'RECHTSKONFORMITÄTS-LEITFADEN' : currentLang === 'nl' ? 'NALEVINGSGIDS' : 'EU COMPLIANCE GUIDE'}
                 </span>
                 <h2 className="text-xl sm:text-3xl font-extrabold leading-tight">
                   {currentLang === 'fr' && 'Maturité GED & Facturation Électronique 2026'}
                   {currentLang === 'es' && 'Madurez GED y Facturación Electrónica B2B'}
-                  {currentLang === 'en' && 'DMS Archiving & B2B e-Invoicing Regulations'}
+                  {currentLang === 'de' && 'DMS-Reifegrad & E-Rechnungspflicht GoBD'}
+                  {currentLang === 'nl' && 'DMS Volwassenheid & E-Invoicing Regelgeving'}
+                  {(currentLang === 'en' || (!['fr', 'es', 'de', 'nl'].includes(currentLang))) && 'DMS Archiving & B2B e-Invoicing Regulations'}
                 </h2>
                 <p className="text-xs sm:text-sm text-white/60 mt-2 max-w-lg leading-relaxed">
                   {currentLang === 'fr' && 'Ce guide pratique explique les implications techniques, réglementaires et organisationnelles de la dématérialisation fiscale pour votre structure.'}
                   {currentLang === 'es' && 'Esta guía práctica detalla las implicaciones técnicas y de cumplimiento de la facturación electrónica B2B.'}
-                  {currentLang === 'en' && 'A comprehensive reference guide outlining local European tax audits (GoBD), secure storage retention, and Peppol e-invoice pipelines.'}
+                  {currentLang === 'de' && 'Dieser Leitfaden erklärt die technischen und rechtlichen Anforderungen der E-Rechnungspflicht und GoBD-Archivierung für Ihr Unternehmen.'}
+                  {currentLang === 'nl' && 'Deze gids legt de technische en wettelijke vereisten uit voor e-invoicing, Peppol en digitale archivering.'}
+                  {(currentLang === 'en' || (!['fr', 'es', 'de', 'nl'].includes(currentLang))) && 'A comprehensive reference guide outlining local European tax audits (GoBD), secure storage retention, and Peppol e-invoice pipelines.'}
                 </p>
               </div>
             </div>
@@ -154,6 +165,80 @@ export const Modals: React.FC<ModalsProps> = ({
                     <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">5. Régimen sancionador por incumplimiento</h3>
                     <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
                       No facilitar la descarga o acceso a las facturas electrónicas a tus clientes, o bien impedir que los autónomos y PYMES accedan de forma gratuita a ellas durante un periodo de 3 o 4 años, conlleva infracciones administrativas con sanciones económicas de hasta 10.000 €. Asimismo, imposibilita el acceso a subvenciones y ayudas públicas estatales.
+                    </p>
+                  </div>
+                </>
+              ) : currentLang === 'de' ? (
+                <>
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">1. E-Rechnungspflicht ab 2025 (Wachstumschancengesetz)</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Seit dem <strong>1. Januar 2025</strong> gilt in Deutschland die Verpflichtung zum Empfang von e-Rechnungen im B2B-Bereich. Alle in Deutschland ansässigen Unternehmen müssen strukturierte elektronische Rechnungen gemäß der europäischen Norm EN 16931 empfangen und verarbeiten können.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">2. Formate: XRechnung &amp; ZUGFeRD</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Die zugelassenen Standardformate sind reine XML-Dateien (<strong>XRechnung</strong>) sowie hybride Formate (<strong>ZUGFeRD</strong> ab Version 2.0.1 / Factur-X), die eine visuelle PDF-Datei mit eingebettetem XML-Datensatz kombinieren.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">3. GoBD-Konformität &amp; Revisionssichere Archivierung</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Nach den GoBD müssen E-Rechnungen im Originalformat unveränderbar und revisionssicher für 8 bis 10 Jahre archiviert werden. Das bloße Ausdrucken oder Ablegen in normalen Ordnerstrukturen ist unzulässig.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">4. Anbindung an ERP- &amp; Buchhaltungssysteme</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Ein modernes Dokumentenmanagementsystem (DMS) schließt die Lücke zwischen E-Mail-Eingang, OCR-Erfassung, Freigabeworkflow und automatischer Verbuchung in Systemen wie SAP, DATEV, Dynamics 365 oder Haufe Lexware.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">5. Risiken bei Nicht-Einhaltung</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Fehlt eine GoBD-konforme Archivierung oder wird das E-Rechnungsformat verworfen, drohen bei Betriebsprüfungen durch das Finanzamt der Verlust des Vorsteuerabzugs sowie Hinzuschätzungen der Umsätze.
+                    </p>
+                  </div>
+                </>
+              ) : currentLang === 'nl' ? (
+                <>
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">1. Verplichte E-invoicing in Nederland</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Binnen de Europese Unie en Nederland wordt B2B e-invoicing via het Peppol-netwerk stapsgewijs de norm. Overheden verplichten gestructureerde facturatie al langer, en B2B volgt sneltreinvaart conform de Europese ViDA-richtlijn.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">2. Het Peppol-netwerk &amp; NLius Standaard</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Elektronische facturen worden veilig uitgewisseld via gecertificeerde Peppol Access Points in het UBL/NLius formaat. Gewone e-mails met PDF-bijlagen verdwijnen geleidelijk omdat deze niet automatisch en foutloos door boekhoudpakketten kunnen worden verwerkt.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">3. Wettelijke Bewaarplicht &amp; Belastingdienst</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Volgens de Nederlandse Belastingdienst geldt een wettelijke bewaarplicht van 7 jaar (10 jaar voor onroerende zaken) voor alle digitale facturen. Deze moeten in hun oorspronkelijke elektronische vorm bewaard blijven.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">4. Integratie met ERP- &amp; Boekhoudsoftware</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Een geavanceerd DMS (Document Management System) koppelt uw Peppol Access Point rechtstreeks aan ERP-systemen zoals Exact, AFAS, SAP, Visma of Twinfield.
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <h3 className="font-extrabold text-[#1e3a5f] text-base border-b pb-2">5. Risico's en Boetes bij Niet-Naleving</h3>
+                    <p className="text-xs sm:text-sm leading-relaxed text-slate-500">
+                      Het niet voldoen aan de eisen van digitale dossiervoering en e-invoicing leidt tot verwerkingsfouten, vertraagde betalingen, verlies van BTW-aftrekrecht en boetes bij fiscale controles.
                     </p>
                   </div>
                 </>
@@ -483,7 +568,7 @@ export const Modals: React.FC<ModalsProps> = ({
 
             <div className="p-6 sm:p-8 space-y-4 text-slate-700">
               <h2 className="font-sans font-extrabold text-xl text-[#1e3a5f] border-b pb-3">
-                {currentLang === 'fr' ? 'Politique Cookies' : currentLang === 'es' ? 'Política de Cookies' : 'Cookie Policy'}
+                {currentLang === 'fr' ? 'Politique Cookies' : currentLang === 'es' ? 'Política de Cookies' : currentLang === 'de' ? 'Cookie-Richtlinie' : currentLang === 'nl' ? 'Cookiebeleid' : 'Cookie Policy'}
               </h2>
 
               <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-500 max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
@@ -505,10 +590,6 @@ export const Modals: React.FC<ModalsProps> = ({
                       <h4 className="font-bold text-[#1e3a5f]">Durée de conservation</h4>
                       <p>Les cookies analytiques sont conservés 13 mois maximum conformément aux recommandations CNIL.</p>
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-[#1e3a5f]">Gérer vos préférences</h4>
-                      <p>Vous pouvez modifier vos préférences cookies à tout moment en contactant <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a> ou en supprimant les cookies de votre navigateur.</p>
-                    </div>
                   </>
                 ) : currentLang === 'es' ? (
                   <>
@@ -528,9 +609,43 @@ export const Modals: React.FC<ModalsProps> = ({
                       <h4 className="font-bold text-[#1e3a5f]">Período de conservación</h4>
                       <p>Las cookies analíticas se conservan durante un máximo de 13 meses, de acuerdo con las directrices reglamentarias europeas.</p>
                     </div>
+                  </>
+                ) : currentLang === 'de' ? (
+                  <>
                     <div className="space-y-1">
-                      <h4 className="font-bold text-[#1e3a5f]">Gestionar sus preferencias</h4>
-                      <p>Puede cambiar sus preferencias de cookies en cualquier momento poniéndose en contacto con <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a> o eliminando las cookies de su navegador.</p>
+                      <h4 className="font-bold text-[#1e3a5f]">Technisch notwendige Cookies</h4>
+                      <p>Diese Cookies sind für den Betrieb der Website (Sprachwahl, Speicherung des Diagnosefortschritts) zwingend erforderlich und können nicht deaktiviert werden.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Analyse-Cookies (Optional)</h4>
+                      <p>Wir verwenden anonyme Statistik-Cookies zur Messung von Reichweite und Systemleistung. Sie können diese über das Cookie-Banner ablehnen.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Keine Werbe-Tracker</h4>
+                      <p>Documatch.eu setzt keine kommerziellen Retargeting- oder Werbe-Cookies von Drittanbietern ein.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Speicherdauer</h4>
+                      <p>Analyse-Cookies werden gemäß DSGVO-Richtlinien maximal 13 Monate gespeichert.</p>
+                    </div>
+                  </>
+                ) : currentLang === 'nl' ? (
+                  <>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Strikt noodzakelijke cookies</h4>
+                      <p>Deze cookies zijn onmisbaar voor de werking van de site (taalvoorkeur, voortgang van de analyse). Deze kunnen niet worden geweigerd.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Analytische cookies (Optioneel)</h4>
+                      <p>Wij gebruiken anonieme analytische cookies om onze diensten te verbeteren. U kunt deze weigeren via de cookiebanner.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Geen advertentiecookies</h4>
+                      <p>Documatch.eu gebruikt geen retargeting- of commerciële advertentiecookies van derden.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Bewaartermijn</h4>
+                      <p>Analytische cookies worden maximaal 13 maanden bewaard conform AVG/GDPR richtlijnen.</p>
                     </div>
                   </>
                 ) : (
@@ -551,12 +666,20 @@ export const Modals: React.FC<ModalsProps> = ({
                       <h4 className="font-bold text-[#1e3a5f]">Data Lifespan</h4>
                       <p>Performance analytics cookies are kept for a maximum of 13 months, fully aligning with CNIL (France) and GDPR rules.</p>
                     </div>
-                    <div className="space-y-1">
-                      <h4 className="font-bold text-[#1e3a5f]">Preference Control</h4>
-                      <p>You can manage your cookies at any time by contacting us at <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a> or clearing your local web browser cache.</p>
-                    </div>
                   </>
                 )}
+
+                <div className="pt-3 border-t mt-4 flex justify-start">
+                  <button
+                    onClick={() => {
+                      onCloseModal();
+                      window.dispatchEvent(new CustomEvent('open-cookie-banner'));
+                    }}
+                    className="bg-[#2563eb] hover:bg-[#1e3a5f] text-white text-xs font-bold px-4 py-2.5 rounded-xl transition-all cursor-pointer font-sans"
+                  >
+                    {currentLang === 'fr' ? '⚙️ Personnaliser mes choix de cookies' : currentLang === 'es' ? '⚙️ Personalizar mis preferencias de cookies' : currentLang === 'de' ? '⚙️ Cookie-Einstellungen anpassen' : currentLang === 'nl' ? '⚙️ Cookie-instellingen aanpassen' : '⚙️ Manage Cookie Consent Preferences'}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
@@ -581,7 +704,7 @@ export const Modals: React.FC<ModalsProps> = ({
 
             <div className="p-6 sm:p-8 space-y-4 text-slate-700">
               <h2 className="font-sans font-extrabold text-xl text-[#1e3a5f] border-b pb-3">
-                {currentLang === 'fr' ? 'Mentions légales' : currentLang === 'es' ? 'Aviso Legal' : 'Imprint / Legal Notice'}
+                {currentLang === 'fr' ? 'Mentions légales' : currentLang === 'es' ? 'Aviso Legal' : currentLang === 'de' ? 'Impressum / Rechtlicher Hinweis' : currentLang === 'nl' ? 'Juridische Kennisgeving' : 'Imprint / Legal Notice'}
               </h2>
 
               <div className="space-y-4 text-xs sm:text-sm leading-relaxed text-slate-500 max-h-[60vh] overflow-y-auto pr-2 no-scrollbar">
@@ -590,7 +713,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     <div className="space-y-1">
                       <h4 className="font-bold text-[#1e3a5f]">Éditeur du site</h4>
                       <p>Documatch est un service de comparaison de solutions de gestion électronique de documents destiné aux entreprises.</p>
-                      <p><strong>Email de contact :</strong> <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a></p>
+                      <p><strong>Email de contact :</strong> <a href="mailto:contact@documatch.eu" className="text-blue-600 font-semibold hover:underline">contact@documatch.eu</a></p>
                       <p><strong>Directeur de publication :</strong> Documatch</p>
                       <p><strong>SIREN :</strong> 992 752 980, société immatriculée en France</p>
                       <p>TVA non applicable conformément à l'article 293 B du Code Général des Impôts.</p>
@@ -615,7 +738,7 @@ export const Modals: React.FC<ModalsProps> = ({
                     <div className="space-y-1">
                       <h4 className="font-bold text-[#1e3a5f]">Editor del sitio</h4>
                       <p>Documatch es un servicio de comparación de soluciones de gestión electrónica de documentos dirigido a empresas.</p>
-                      <p><strong>Email de contacto :</strong> <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a></p>
+                      <p><strong>Email de contacto :</strong> <a href="mailto:contact@documatch.eu" className="text-blue-600 font-semibold hover:underline">contact@documatch.eu</a></p>
                       <p><strong>Director de publicación :</strong> Documatch</p>
                       <p><strong>SIREN / Identificación :</strong> 992 752 980, sociedad registrada en Francia</p>
                       <p>TVA no aplicable de acuerdo con el artículo 293 B del Código General de Impuestos de Francia.</p>
@@ -635,12 +758,50 @@ export const Modals: React.FC<ModalsProps> = ({
                       <p>Documatch hace todo lo posible por facilitar información fiable y actualizada periódicamente. No obstante, no se ofrece garantía alguna en cuanto a la exactitud o integridad de las informaciones presentadas. El usuario reconoce utilizar esta información bajo su única responsabilidad.</p>
                     </div>
                   </>
+                ) : currentLang === 'de' ? (
+                  <>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Anbieterkennzeichnung</h4>
+                      <p>Documatch ist ein unabhäniger Vergleichs- und Beratungsdienst für Dokumentenmanagementsysteme (DMS).</p>
+                      <p><strong>E-Mail-Kontakt:</strong> <a href="mailto:contact@documatch.eu" className="text-blue-600 font-semibold hover:underline">contact@documatch.eu</a></p>
+                      <p><strong>Verantwortlich für den Inhalt:</strong> Documatch</p>
+                      <p><strong>Registrierungsnummer (SIREN):</strong> 992 752 980 (Frankreich)</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Webhosting</h4>
+                      <p>Die Website Documatch.eu wird auf sicheren OVH-Servern gehostet.</p>
+                      <p><strong>Adresse:</strong> 2 rue Kellermann, 59100 Roubaix, Frankreich.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Urheberrecht</h4>
+                      <p>Alle Inhalte (Texte, Grafiken, Logos) auf Documatch.eu sind urheberrechtlich geschützt. Die Vervielfältigung oder kommerzielle Nutzung ohne vorherige schriftliche Genehmigung ist untersagt.</p>
+                    </div>
+                  </>
+                ) : currentLang === 'nl' ? (
+                  <>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Uitgever van de website</h4>
+                      <p>Documatch is een onafhankelijke vergelijkingsdienst voor documentbeheersystemen (DMS) voor bedrijven.</p>
+                      <p><strong>E-mailadres:</strong> <a href="mailto:contact@documatch.eu" className="text-blue-600 font-semibold hover:underline">contact@documatch.eu</a></p>
+                      <p><strong>Verantwoordelijke uitgever:</strong> Documatch</p>
+                      <p><strong>Ondernemingsnummer (SIREN):</strong> 992 752 980 (Frankrijk)</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Webhosting</h4>
+                      <p>De website Documatch.eu wordt gehost op veilige OVH-servers.</p>
+                      <p><strong>Adres:</strong> 2 rue Kellermann, 59100 Roubaix, Frankrijk.</p>
+                    </div>
+                    <div className="space-y-1">
+                      <h4 className="font-bold text-[#1e3a5f]">Intellectuele eigendom</h4>
+                      <p>Alle inhoud op Documatch.eu is beschermd door het auteursrecht. Reproductie of commercieel gebruik zonder voorafgaande toestemming is verboden.</p>
+                    </div>
+                  </>
                 ) : (
                   <>
                     <div className="space-y-1">
                       <h4 className="font-bold text-[#1e3a5f]">Publisher Information</h4>
                       <p>Documatch is a B2B independent benchmark and advisory software service matching business entities with optimal Document Management solutions.</p>
-                      <p><strong>Email :</strong> <a href="mailto:info@documatch.eu" className="text-blue-600 font-semibold hover:underline">info@documatch.eu</a></p>
+                      <p><strong>Email :</strong> <a href="mailto:contact@documatch.eu" className="text-blue-600 font-semibold hover:underline">contact@documatch.eu</a></p>
                       <p><strong>Director of Publication :</strong> Documatch</p>
                       <p><strong>Registration (SIREN) :</strong> 992 752 980, incorporated in France</p>
                       <p>VAT exempted according to Art. 293 B of the French General Tax Code.</p>
@@ -836,6 +997,189 @@ export const Modals: React.FC<ModalsProps> = ({
                 >
                   {currentLang === 'fr' ? 'Démarrer le diagnostic' : currentLang === 'es' ? 'Iniciar diagnóstico' : 'Start Free Audit'}
                 </button>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* =====================================================
+           SITEMAP MODAL
+         ===================================================== */}
+      {activeModal === 'sitemap-modal' && (
+        <div
+          onClick={handleOverlayClick}
+          className="fixed inset-0 z-[100] bg-black/60 overflow-y-auto p-4 flex items-start justify-center backdrop-blur-sm"
+        >
+          <div className="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden shadow-2xl my-8 animate-fade-in font-sans">
+            {/* Close button */}
+            <button
+              onClick={onCloseModal}
+              className="absolute top-4 right-4 w-9 h-9 bg-slate-100 hover:bg-slate-200 border-none rounded-full flex items-center justify-center text-slate-500 hover:text-slate-800 text-lg font-bold transition-all cursor-pointer z-50"
+            >
+              ✕
+            </button>
+
+            {/* Header */}
+            <div className="bg-[#0d1f33] p-6 sm:p-8 text-white">
+              <div className="inline-block px-3 py-1 bg-blue-500/20 border border-blue-400/30 rounded-full text-[10px] font-extrabold uppercase tracking-widest text-blue-300 mb-3">
+                SEO &amp; Navigation
+              </div>
+              <h2 className="text-xl sm:text-2xl font-black tracking-tight">
+                {currentLang === 'fr' && 'Plan du site (Sitemap)'}
+                {currentLang === 'es' && 'Mapa del sitio (Sitemap)'}
+                {currentLang === 'en' && 'Website Sitemap'}
+                {currentLang === 'de' && 'Seitenstruktur & Sitemap'}
+                {currentLang === 'nl' && 'Website Sitemap'}
+              </h2>
+              <p className="text-xs sm:text-sm text-slate-300 mt-1 max-w-xl">
+                {currentLang === 'fr' && 'Structure complète des pages, outils de diagnostic et ressources juridiques de Documatch.eu.'}
+                {currentLang === 'es' && 'Estructura completa de páginas, herramientas de diagnóstico y recursos legales de Documatch.eu.'}
+                {currentLang === 'en' && 'Complete index of pages, diagnostic tools, and compliance resources on Documatch.eu.'}
+                {currentLang === 'de' && 'Vollständige Übersicht aller Seiten, Diagnose-Tools und Rechtshinweise auf Documatch.eu.'}
+                {currentLang === 'nl' && 'Volledig overzicht van alle pagina\'s, analysetools en juridische bronnen op Documatch.eu.'}
+              </p>
+            </div>
+
+            {/* Content grid */}
+            <div className="p-6 sm:p-8 space-y-6 text-slate-700 text-xs sm:text-sm">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                {/* Section 1: Main Application & Audit Tool */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-[#1d4ed8] font-black text-sm">
+                    <span className="w-2 h-2 rounded-full bg-blue-600"></span>
+                    <h3>
+                      {currentLang === 'fr' ? '1. Diagnostic & Test de Maturité' : currentLang === 'es' ? '1. Diagnóstico y Test de Madurez' : '1. Diagnostic & Audit Tool'}
+                    </h3>
+                  </div>
+                  <ul className="space-y-2 text-xs text-slate-600 pl-4 border-l-2 border-blue-200">
+                    <li>
+                      <button 
+                        onClick={() => { onCloseModal(); onStartQuizFromGuide(); }} 
+                        className="text-blue-600 hover:underline font-semibold bg-transparent border-none p-0 cursor-pointer text-left"
+                      >
+                        • {currentLang === 'fr' ? 'Test de conformité GED (20 questions)' : currentLang === 'es' ? 'Test de conformidad GED (20 preguntas)' : 'DMS Compliance Test (20 questions)'}
+                      </button>
+                    </li>
+                    <li>
+                      <span className="text-slate-500">
+                        • {currentLang === 'fr' ? 'Évaluation des 5 axes : Profil, Système, Conformité, ERP, Projet' : currentLang === 'es' ? 'Evaluación de los 5 ejes: Perfil, Sistema, Conformidad, ERP, Proyecto' : 'Evaluation across 5 axes'}
+                      </span>
+                    </li>
+                    <li>
+                      <span className="text-slate-500">
+                        • {currentLang === 'fr' ? 'Génération de rapport PDF gratuit' : currentLang === 'es' ? 'Generación de informe PDF gratuito' : 'Free downloadable PDF Report'}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Section 2: Compliance Guide & FAQ */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-[#1d4ed8] font-black text-sm">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600"></span>
+                    <h3>
+                      {currentLang === 'fr' ? '2. Guides & Informations Légales' : currentLang === 'es' ? '2. Guías e Información Legal' : '2. Guides & Regulatory Hub'}
+                    </h3>
+                  </div>
+                  <ul className="space-y-2 text-xs text-slate-600 pl-4 border-l-2 border-emerald-200">
+                    <li>
+                      <button 
+                        onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'guide-modal' })); }} 
+                        className="text-emerald-700 hover:underline font-semibold bg-transparent border-none p-0 cursor-pointer text-left"
+                      >
+                        • {currentLang === 'fr' ? 'Guide complet réforme e-Invoicing' : currentLang === 'es' ? 'Guía completa reforma e-Factura' : 'e-Invoicing Compliance Guide'}
+                      </button>
+                    </li>
+                    <li>
+                      <button 
+                        onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'faq-modal' })); }} 
+                        className="text-emerald-700 hover:underline font-semibold bg-transparent border-none p-0 cursor-pointer text-left"
+                      >
+                        • {currentLang === 'fr' ? 'Foire Aux Questions (FAQ)' : currentLang === 'es' ? 'Preguntas Frecuentes (FAQ)' : 'Frequently Asked Questions (FAQ)'}
+                      </button>
+                    </li>
+                    <li>
+                      <span className="text-slate-500">
+                        • {currentLang === 'fr' ? 'Normes NF Z42-020, eIDAS, GoBD, Peppol / UBL' : currentLang === 'es' ? 'Normativa Ley Crea y Crece, eIDAS, GoBD, Peppol' : 'Compliance standards (eIDAS, GoBD, Peppol)'}
+                      </span>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Section 3: Legal Policies */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-[#1d4ed8] font-black text-sm">
+                    <span className="w-2 h-2 rounded-full bg-amber-600"></span>
+                    <h3>
+                      {currentLang === 'fr' ? '3. Politique & Confidentialité' : currentLang === 'es' ? '3. Políticas y Privacidad' : '3. Legal & Privacy Policies'}
+                    </h3>
+                  </div>
+                  <ul className="space-y-2 text-xs text-slate-600 pl-4 border-l-2 border-amber-200">
+                    <li>
+                      <button onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'mentions-modal' })); }} className="text-slate-700 hover:text-blue-600 underline bg-transparent border-none p-0 cursor-pointer text-left">
+                        • {TRANSLATIONS['footer.legal.mentions'][currentLang]}
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'rgpd-modal' })); }} className="text-slate-700 hover:text-blue-600 underline bg-transparent border-none p-0 cursor-pointer text-left">
+                        • {TRANSLATIONS['footer.legal.privacy'][currentLang]}
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'cgu-modal' })); }} className="text-slate-700 hover:text-blue-600 underline bg-transparent border-none p-0 cursor-pointer text-left">
+                        • {TRANSLATIONS['footer.legal.cgu'][currentLang]}
+                      </button>
+                    </li>
+                    <li>
+                      <button onClick={() => { onCloseModal(); window.dispatchEvent(new CustomEvent('open-modal', { detail: 'cookies-modal' })); }} className="text-slate-700 hover:text-blue-600 underline bg-transparent border-none p-0 cursor-pointer text-left">
+                        • {TRANSLATIONS['footer.legal.cookies'][currentLang]}
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+
+                {/* Section 4: European Countries & Languages */}
+                <div className="bg-slate-50 border border-slate-200/80 rounded-xl p-5 space-y-3">
+                  <div className="flex items-center gap-2 text-[#1d4ed8] font-black text-sm">
+                    <span className="w-2 h-2 rounded-full bg-indigo-600"></span>
+                    <h3>
+                      {currentLang === 'fr' ? '4. Couverture Européenne' : currentLang === 'es' ? '4. Cobertura Europea' : '4. European Coverage'}
+                    </h3>
+                  </div>
+                  <p className="text-xs text-slate-500">
+                    {currentLang === 'fr' ? 'Diagnostics personnalisés par marché :' : currentLang === 'es' ? 'Diagnósticos personalizados por país:' : 'Localized diagnostic models:'}
+                  </p>
+                  <div className="flex flex-wrap gap-1.5 pt-1">
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇫🇷 France (FR)</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇪🇸 España (ES)</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇩🇪 Deutschland (DE)</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇳🇱 Nederland (NL)</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇧🇪 Belgique</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇨🇭 Suisse</span>
+                    <span className="px-2 py-0.5 bg-white border border-slate-200 rounded text-[11px] font-semibold text-slate-700">🇱🇺 Luxembourg</span>
+                  </div>
+                </div>
+
+              </div>
+
+              {/* XML Sitemap Action Footer */}
+              <div className="pt-4 border-t flex flex-col sm:flex-row items-center justify-between gap-4 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                <div className="text-xs text-slate-600">
+                  <strong className="text-slate-800">XML Sitemap Engine:</strong>{' '}
+                  {currentLang === 'fr' ? 'Fichier XML structuré conforme aux normes Google et Bing Webmaster.' : currentLang === 'es' ? 'Archivo XML estructurado conforme a las normas de Google y Bing Webmaster.' : 'Standard XML file compliant with Google Search Console & Bing Webmaster.'}
+                </div>
+                <a
+                  href="/sitemap.xml"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-lg transition-all flex items-center gap-2 shrink-0 cursor-pointer no-underline"
+                >
+                  <span>{currentLang === 'fr' ? 'Ouvrir sitemap.xml' : currentLang === 'es' ? 'Abrir sitemap.xml' : 'Open sitemap.xml'}</span>
+                  <span>↗</span>
+                </a>
               </div>
 
             </div>

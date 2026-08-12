@@ -17,12 +17,16 @@ export const FAQ: React.FC<FAQProps> = ({ currentLang }) => {
   const getTagText = () => {
     if (currentLang === 'fr') return 'FOIRE AUX QUESTIONS';
     if (currentLang === 'es') return 'PREGUNTAS FRECUENTES';
+    if (currentLang === 'de') return 'HÄUFIG GESTELLTE FRAGEN';
+    if (currentLang === 'nl') return 'VEELGESTELDE VRAGEN';
     return 'FREQUENTLY ASKED QUESTIONS';
   };
 
   const getSectionTitle = () => {
     if (currentLang === 'fr') return 'Tout comprendre sur la réforme 2026 & Documatch';
     if (currentLang === 'es') return 'Preguntas clave sobre la reforma 2026 y Documatch';
+    if (currentLang === 'de') return 'Alles zur E-Rechnungspflicht & Documatch';
+    if (currentLang === 'nl') return 'Alles over e-invoicing & Documatch';
     return 'Key questions about the 2026 reform & Documatch';
   };
 
@@ -31,6 +35,10 @@ export const FAQ: React.FC<FAQProps> = ({ currentLang }) => {
       return 'Retrouvez les réponses indispensables pour aborder sereinement les nouvelles exigences légales de facturation et d’archivage électronique.';
     } else if (currentLang === 'es') {
       return 'Encuentre respuestas rápidas sobre las nuevas exigencias de facturación electrónica obligatoria y cómo prepararse de forma segura.';
+    } else if (currentLang === 'de') {
+      return 'Wichtige Antworten zur E-Rechnungspflicht (Wachstumschancengesetz), GoBD und zur rechtssicheren DMS-Auswahl.';
+    } else if (currentLang === 'nl') {
+      return 'Krijg heldere antwoorden over de B2B e-invoicing verplichting, Peppol/UBL standaarden en oordeelkundige DMS-keuze.';
     } else {
       return 'Get professional, direct answers on B2B e-invoicing compliance, secure document workflows, and audit-proof storage across Europe.';
     }
@@ -81,6 +89,52 @@ export const FAQ: React.FC<FAQProps> = ({ currentLang }) => {
         {
           question: "¿Cuáles son las sanciones y riesgos si mi empresa no se adapta?",
           answer: "La normativa española de la Ley Crea y Crece establece sanciones económicas estrictas de hasta 10.000 € para aquellas empresas que no ofrezcan a sus clientes la recepción de facturas electrónicas o no mantengan el acceso a ellas durante 4 años. Operativamente, también se arriesga a retrasos en cobros de clientes, fallos de auditoría de Hacienda, y exclusión de licitaciones o contratos públicos."
+        }
+      ];
+    } else if (currentLang === 'de') {
+      return [
+        {
+          question: "Was bedeutet die E-Rechnungspflicht ab 2025/2026 in Deutschland?",
+          answer: "Seit dem 1. Januar 2025 müssen alle in Deutschland ansässigen B2B-Unternehmen in der Lage sein, strukturierte elektronische Rechnungen (gemäß EN 16931, z.B. XRechnung oder ZUGFeRD) zu empfangen und zu verarbeiten. Papierrechnungen und einfache PDF-Dateien ohne Datensatz erfüllen die Vorgaben nicht mehr."
+        },
+        {
+          question: "Warum ist eine DMS-Reifegradanalyse jetzt entscheidend?",
+          answer: "Die Einführung von E-Rechnungen betrifft die gesamte Dokumentenverarbeitung und Buchhaltung. Ein modernes Dokumentenmanagementsystem (DMS) sorgt für die automatische Auslesung (OCR/KIE), GoBD-konforme Archivierung und Anbindung an das ERP-System."
+        },
+        {
+          question: "Wie funktioniert der Documatch Lab Reifegrad-Score?",
+          answer: "Der Score (0 bis 100 Punkte) ermittelt den Vorbereitungsgrad Ihres Unternehmens. Anhand von 20 gezielten Fragen analysieren wir Ihre Dokumentenprozesse und zeigen konkrete Handlungsfelder auf."
+        },
+        {
+          question: "Ist der Test wirklich kostenlos und unabhängig?",
+          answer: "Ja, zu 100%. Documatch.eu ist ein neutrales Beratungsportal. Wir vertreiben keine Softwarelizenzen und erhalten keine Provisionen von Anbietern."
+        },
+        {
+          question: "Welche Risiken drohen bei Nicht-Einhaltung der GoBD & E-Rechnungspflicht?",
+          answer: "Bei Mängeln drohen der Verlust des Vorsteuerabzugs, Hinzuschätzungen durch das Finanzamt bei Betriebsprüfungen sowie Verzögerungen in den Lieferketten."
+        }
+      ];
+    } else if (currentLang === 'nl') {
+      return [
+        {
+          question: "Wat houdt de verplichte e-invoicing in?",
+          answer: "In Europees verband wordt gestructureerde elektronische facturatie (UBL/Peppol) stapsgewijs verplicht voor B2B-transacties. Gewone PDF's per e-mail voldoen niet meer aan de nieuwste normen voor automatische verwerking."
+        },
+        {
+          question: "Waarom nu een DMS-volwassenheidstest uitvoeren?",
+          answer: "E-invoicing vereist een naadloze koppeling met uw Document Management Systeem (DMS) en ERP. Deze test controleert uw gereedheid op het vlak van herkenning, goedkeuring en e-archivering."
+        },
+        {
+          question: "Hoe werkt de Documatch Lab volwassenheidsscore?",
+          answer: "De score (0-100) geeft een helder beeld van uw digitale volwassenheid. Op basis van 20 vragen ontvangt u een analyserapport met aanbevelingen."
+        },
+        {
+          question: "Is deze diagnose echt gratis en onafhankelijk?",
+          answer: "Ja, 100% gratis en onafhankelijk. Documatch.eu verkoopt geen softwarelicenties en heeft geen voorkeur voor specifieke leveranciers."
+        },
+        {
+          question: "Wat zijn de risico's van niet-naleving?",
+          answer: "Niet-conforme systemen leiden tot verwerkingsfouten, vertraagde betalingen, verlies van fiscale aftrekbaarheid en problemen bij belastingaudits."
         }
       ];
     } else {

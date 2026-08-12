@@ -75,7 +75,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ currentLang, leadData, onDat
             onClick={onClose}
             className="absolute top-4 right-4 text-white/50 hover:text-white text-[10px] sm:text-xs font-semibold bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded transition-colors cursor-pointer"
           >
-            {currentLang === 'fr' ? 'Sauvegarder & Quitter' : currentLang === 'es' ? 'Guardar y Salir' : 'Save & Exit'}
+            {currentLang === 'fr' ? 'Sauvegarder & Quitter' : currentLang === 'es' ? 'Guardar y Salir' : currentLang === 'de' ? 'Speichern & Beenden' : currentLang === 'nl' ? 'Opslaan & Afbreken' : 'Save & Exit'}
           </button>
           <h2 className="font-sans font-extrabold text-xl sm:text-2xl mb-2 text-center">
             {TRANSLATIONS['lead.title'][currentLang]}
@@ -240,7 +240,7 @@ export const LeadForm: React.FC<LeadFormProps> = ({ currentLang, leadData, onDat
                 }}
                 className="text-blue-600 font-semibold underline"
               >
-                {currentLang === 'fr' ? 'En savoir plus' : currentLang === 'es' ? 'Saber más' : 'Learn more'}
+                {currentLang === 'fr' ? 'En savoir plus' : currentLang === 'es' ? 'Saber más' : currentLang === 'de' ? 'Mehr erfahren' : currentLang === 'nl' ? 'Meer weten' : 'Learn more'}
               </a>
               .
             </p>

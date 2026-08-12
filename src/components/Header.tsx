@@ -37,11 +37,23 @@ export const Header: React.FC<HeaderProps> = ({
     if (currentLang === 'fr') {
       return 'Réforme - 1er sept. 2026';
     } else if (currentLang === 'es') {
-      return 'Réforme - 1er sept. 2026';
+      return 'Reforma - Enero 2026';
+    } else if (currentLang === 'de') {
+      return 'E-Rechnungspflicht 2025';
+    } else if (currentLang === 'nl') {
+      return 'E-Invoicing Verplichting';
     } else {
-      return 'Réforme - 1er sept. 2026';
+      return 'e-Invoicing Mandates 2025/2026';
     }
   };
+
+  const LANGUAGES: { code: Language; name: string }[] = [
+    { code: 'fr', name: 'Français' },
+    { code: 'es', name: 'Español' },
+    { code: 'en', name: 'English' },
+    { code: 'de', name: 'Deutsch' },
+    { code: 'nl', name: 'Nederlands' },
+  ];
 
   return (
     <header id="site-header" className="bg-[#0f1a2c] sticky top-0 z-50 shadow-md border-b border-white/5 print:hidden">
@@ -51,6 +63,8 @@ export const Header: React.FC<HeaderProps> = ({
           {currentLang === 'fr' && TRANSLATIONS['announcement.fr']['fr']}
           {currentLang === 'es' && TRANSLATIONS['announcement.es']['es']}
           {currentLang === 'en' && TRANSLATIONS['announcement.en']['en']}
+          {currentLang === 'de' && TRANSLATIONS['announcement.en']['de']}
+          {currentLang === 'nl' && TRANSLATIONS['announcement.en']['nl']}
         </span>
       </div>
 
@@ -114,56 +128,39 @@ export const Header: React.FC<HeaderProps> = ({
 
             {/* Desktop Segmented Control (Visible on sm and larger) */}
             <div className="hidden sm:flex items-center bg-[#1e293b]/60 border border-white/5 rounded-lg p-0.5" id="lang-selector">
-              <button
-                onClick={() => onLanguageChange('fr')}
-                className={`px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-xs font-bold uppercase transition-all cursor-pointer min-h-[30px] sm:min-h-[36px] min-w-[30px] sm:min-w-[36px] flex items-center justify-center ${
-                  currentLang === 'fr' 
-                    ? 'bg-[#2563eb] text-white shadow-sm' 
-                    : 'text-white/45 hover:text-white/80'
-                }`}
-              >
-                FR
-              </button>
-              <button
-                onClick={() => onLanguageChange('es')}
-                className={`px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-xs font-bold uppercase transition-all cursor-pointer min-h-[30px] sm:min-h-[36px] min-w-[30px] sm:min-w-[36px] flex items-center justify-center ${
-                  currentLang === 'es' 
-                    ? 'bg-[#2563eb] text-white shadow-sm' 
-                    : 'text-white/45 hover:text-white/80'
-                }`}
-              >
-                ES
-              </button>
-              <button
-                onClick={() => onLanguageChange('en')}
-                className={`px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-md text-xs font-bold uppercase transition-all cursor-pointer min-h-[30px] sm:min-h-[36px] min-w-[30px] sm:min-w-[36px] flex items-center justify-center ${
-                  currentLang === 'en' 
-                    ? 'bg-[#2563eb] text-white shadow-sm' 
-                    : 'text-white/45 hover:text-white/80'
-                }`}
-              >
-                EN
-              </button>
+              {LANGUAGES.map((l) => (
+                <button
+                  key={l.code}
+                  onClick={() => onLanguageChange(l.code)}
+                  className={`px-2 sm:px-2 py-1 sm:py-1 rounded-md text-xs font-bold uppercase transition-all cursor-pointer min-h-[30px] sm:min-h-[32px] min-w-[28px] sm:min-w-[32px] flex items-center justify-center ${
+                    currentLang === l.code 
+                      ? 'bg-[#2563eb] text-white shadow-sm' 
+                      : 'text-white/45 hover:text-white/80'
+                  }`}
+                >
+                  {l.code}
+                </button>
+              ))}
             </div>
 
             {/* Custom Popover Dropdown Menu (Renders as a direct floating layer above layout constraints on mobile) */}
             {isOpen && (
-              <div className="sm:hidden absolute right-0 mt-2 w-32 bg-[#15233c] border border-white/10 rounded-lg shadow-2xl overflow-hidden z-[110] animate-in fade-in slide-in-from-top-1 duration-100">
-                {(['fr', 'es', 'en'] as Language[]).map((lang) => (
+              <div className="sm:hidden absolute right-0 mt-2 w-36 bg-[#15233c] border border-white/10 rounded-lg shadow-2xl overflow-hidden z-[110] animate-in fade-in slide-in-from-top-1 duration-100">
+                {LANGUAGES.map((l) => (
                   <button
-                    key={lang}
+                    key={l.code}
                     onClick={() => {
-                      onLanguageChange(lang);
+                      onLanguageChange(l.code);
                       setIsOpen(false);
                     }}
                     className={`w-full px-3 py-2.5 text-left text-xs font-bold uppercase transition-all flex items-center justify-between cursor-pointer border-b border-white/5 last:border-0 ${
-                      currentLang === lang
+                      currentLang === l.code
                         ? 'bg-[#2563eb] text-white'
                         : 'text-white/70 hover:bg-[#1e2d45] hover:text-white'
                     }`}
                   >
-                    <span>{lang === 'fr' ? 'Français' : lang === 'es' ? 'Español' : 'English'}</span>
-                    {currentLang === lang && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
+                    <span>{l.name}</span>
+                    {currentLang === l.code && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
                   </button>
                 ))}
               </div>

@@ -38,6 +38,22 @@ const PHASES_EN = [
   'Phase 5 — Scope, Timeline & Budget',
 ];
 
+const PHASES_DE = [
+  'Phase 1 — Entscheidungsprofil',
+  'Phase 2 — Aktuelles System',
+  'Phase 3 — Rechtssicherheit & Normen',
+  'Phase 4 — ERP & Integrationen',
+  'Phase 5 — Projekt & Budget',
+];
+
+const PHASES_NL = [
+  'Fase 1 — Beslissingsprofiel',
+  'Fase 2 — Huidig systeem',
+  'Fase 3 — Naleving & Normen',
+  'Fase 4 — ERP & Integraties',
+  'Fase 5 — Project & Budget',
+];
+
 const PHASE_TAGS = [
   'bg-blue-50 text-blue-700 border border-blue-100',
   'bg-emerald-50 text-emerald-700 border border-emerald-100',
@@ -63,20 +79,24 @@ export const Quiz: React.FC<QuizProps> = ({
   const getPhaseLabel = () => {
     if (currentLang === 'fr') return PHASES_FR[q.phase];
     if (currentLang === 'es') return PHASES_ES[q.phase];
+    if (currentLang === 'de') return PHASES_DE[q.phase];
+    if (currentLang === 'nl') return PHASES_NL[q.phase];
     return PHASES_EN[q.phase];
   };
 
   const getQuestionText = () => {
-    return q[currentLang]?.q || q.fr.q;
+    return q[currentLang]?.q || q.en?.q || q.fr.q;
   };
 
   const getQuestionHint = () => {
-    return q[currentLang]?.hint || q.fr.hint;
+    return q[currentLang]?.hint || q.en?.hint || q.fr.hint;
   };
 
   const getTagLabel = () => {
     if (currentLang === 'fr') return q.tagFr;
     if (currentLang === 'es') return q.tagEs;
+    if (currentLang === 'de') return q.tagDe || q.tagEn;
+    if (currentLang === 'nl') return q.tagNl || q.tagEn;
     return q.tagEn;
   };
 
@@ -85,9 +105,21 @@ export const Quiz: React.FC<QuizProps> = ({
     ? (isLast ? 'Voir mes résultats' : 'Suivant')
     : currentLang === 'es'
     ? (isLast ? 'Ver mis resultados' : 'Siguiente')
+    : currentLang === 'de'
+    ? (isLast ? 'Ergebnisse anzeigen' : 'Weiter')
+    : currentLang === 'nl'
+    ? (isLast ? 'Bekijk mijn resultaten' : 'Volgende')
     : (isLast ? 'See My Results' : 'Next');
 
-  const prevBtnText = currentLang === 'fr' ? 'Précédent' : currentLang === 'es' ? 'Anterior' : 'Previous';
+  const prevBtnText = currentLang === 'fr' 
+    ? 'Précédent' 
+    : currentLang === 'es' 
+    ? 'Anterior' 
+    : currentLang === 'de' 
+    ? 'Zurück' 
+    : currentLang === 'nl' 
+    ? 'Vorige' 
+    : 'Previous';
 
   return (
     <section className="bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -105,7 +137,7 @@ export const Quiz: React.FC<QuizProps> = ({
                 onClick={onClose}
                 className="text-[#fbbf24] hover:text-white transition-colors bg-white/5 hover:bg-white/10 px-2.5 py-1 rounded text-[10px] font-bold uppercase tracking-wider cursor-pointer"
               >
-                {currentLang === 'fr' ? 'Quitter' : currentLang === 'es' ? 'Salir' : 'Exit'}
+                {currentLang === 'fr' ? 'Quitter' : currentLang === 'es' ? 'Salir' : currentLang === 'de' ? 'Beenden' : currentLang === 'nl' ? 'Afbreken' : 'Exit'}
               </button>
             </div>
           </div>
@@ -137,7 +169,7 @@ export const Quiz: React.FC<QuizProps> = ({
           <div className="space-y-3">
             {q.opts.map((opt, i) => {
               const isSelected = answers[currentQ] === i;
-              const optionText = currentLang === 'fr' ? opt.fr : currentLang === 'es' ? opt.es : opt.en;
+              const optionText = opt[currentLang] || opt.en || opt.fr;
 
               return (
                 <button

@@ -42,60 +42,190 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Links Col 1: Reform */}
           <div className="space-y-4">
             <h4 className="text-[10px] font-bold tracking-widest text-white/30 uppercase">
-              {currentLang === 'fr' ? 'Réforme 2026' : currentLang === 'es' ? 'Reforma 2026' : 'Compliance 2026'}
+              {currentLang === 'fr' ? 'Réforme 2026' : currentLang === 'es' ? 'Reforma 2026' : currentLang === 'de' ? 'E-Rechnung 2025/2026' : currentLang === 'nl' ? 'E-Invoicing 2026' : 'Compliance 2026'}
             </h4>
             <ul className="space-y-2.5">
-              <li>
-                <a
-                  href="https://www.impots.gouv.fr/portail/node/13464"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-1.5"
-                >
-                  <ExternalLinkIcon />
-                  <span>
-                    {currentLang === 'fr'
-                      ? 'E-invoicing France'
-                      : currentLang === 'es'
-                      ? 'E-invoicing Francia'
-                      : 'E-invoicing France'}
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.impots.gouv.fr/facturation-electronique-et-plateformes-partenaires"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-1.5"
-                >
-                  <ExternalLinkIcon />
-                  <span>
-                    {currentLang === 'fr'
-                      ? 'Portail PPF'
-                      : currentLang === 'es'
-                      ? 'Portal PPF'
-                      : 'PPF Portal'}
-                  </span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="https://www.impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-white transition-colors flex items-center gap-1.5"
-                >
-                  <ExternalLinkIcon />
-                  <span>
-                    {currentLang === 'fr'
-                      ? 'PDP Agréés'
-                      : currentLang === 'es'
-                      ? 'PDP Acreditados'
-                      : 'Approved PDPs'}
-                  </span>
-                </a>
-              </li>
+              {currentLang === 'de' ? (
+                <>
+                  <li>
+                    <a
+                      href="https://www.e-rechnung-bund.de"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>E-Rechnung Bund (BMF)</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.kos-it.de"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>KoSIT Standards (XRechnung)</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.bundesfinanzministerium.de"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Wachstumschancengesetz</span>
+                    </a>
+                  </li>
+                </>
+              ) : currentLang === 'nl' ? (
+                <>
+                  <li>
+                    <a
+                      href="https://www.rijksoverheid.nl/onderwerpen/e-factureren"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>E-factureren Rijksoverheid</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.logius.nl/diensten/peppol"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Logius Peppol Autoriteit</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.helpdesk-efactureren.nl"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Helpdesk E-factureren NL</span>
+                    </a>
+                  </li>
+                </>
+              ) : currentLang === 'es' ? (
+                <>
+                  <li>
+                    <a
+                      href="https://www.boe.es/buscar/act.php?id=BOE-A-2022-15818"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>E-factura (Ley Crea y Crece)</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.facturae.gob.es"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Portal Facturae</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.agenciatributaria.es"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Agencia Tributaria (AEAT)</span>
+                    </a>
+                  </li>
+                </>
+              ) : currentLang === 'fr' ? (
+                <>
+                  <li>
+                    <a
+                      href="https://www.impots.gouv.fr/portail/node/13464"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>E-invoicing France</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.impots.gouv.fr/facturation-electronique-et-plateformes-partenaires"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>Portail PPF</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://www.impots.gouv.fr/je-consulte-la-liste-des-plateformes-agreees"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>PDP Agréés</span>
+                    </a>
+                  </li>
+                </>
+              ) : (
+                <>
+                  <li>
+                    <a
+                      href="https://ec.europa.eu/digital-building-blocks/sites/display/DIGITAL/eInvoicing"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>EU E-Invoicing Directive</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://peppol.org"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>OpenPEPPOL Association</span>
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="https://ec.europa.eu"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-white transition-colors flex items-center gap-1.5"
+                    >
+                      <ExternalLinkIcon />
+                      <span>EU Digital Standards</span>
+                    </a>
+                  </li>
+                </>
+              )}
               <li>
                 <button
                   onClick={() => onOpenModal('guide-modal')}
@@ -107,6 +237,10 @@ export const Footer: React.FC<FooterProps> = ({
                       ? 'Guide conformité'
                       : currentLang === 'es'
                       ? 'Guía de conformidad'
+                      : currentLang === 'de'
+                      ? 'Compliance-Leitfaden'
+                      : currentLang === 'nl'
+                      ? 'Compliancegids'
                       : 'Compliance Guide'}
                   </span>
                 </button>
@@ -122,6 +256,10 @@ export const Footer: React.FC<FooterProps> = ({
                       ? 'Questions fréquentes (FAQ)'
                       : currentLang === 'es'
                       ? 'Preguntas frecuentes (FAQ)'
+                      : currentLang === 'de'
+                      ? 'Häufige Fragen (FAQ)'
+                      : currentLang === 'nl'
+                      ? 'Veelgestelde vragen (FAQ)'
                       : 'Frequently Asked Questions (FAQ)'}
                   </span>
                 </button>
@@ -132,9 +270,15 @@ export const Footer: React.FC<FooterProps> = ({
           {/* Links Col 2: Security & Contact */}
           <div className="space-y-4">
             <h4 className="text-[10px] font-bold tracking-widest text-white/30 uppercase">
-              {currentLang === 'fr' ? 'Accompagnement' : currentLang === 'es' ? 'Soporte' : 'Advisory'}
+              {currentLang === 'fr' ? 'Accompagnement' : currentLang === 'es' ? 'Soporte' : currentLang === 'de' ? 'Beratung & Support' : currentLang === 'nl' ? 'Advies & Ondersteuning' : 'Advisory'}
             </h4>
             <ul className="space-y-2">
+              <li>
+                <a href="mailto:contact@documatch.eu" className="hover:text-white transition-colors flex items-center gap-1.5">
+                  <Mail size={12} className="text-[#3b82f6]" />
+                  <span>contact@documatch.eu</span>
+                </a>
+              </li>
               <li>
                 <a href="mailto:info@documatch.eu" className="hover:text-white transition-colors flex items-center gap-1.5">
                   <Mail size={12} className="text-[#3b82f6]" />
@@ -172,21 +316,27 @@ export const Footer: React.FC<FooterProps> = ({
             <button onClick={() => onOpenModal('cookies-modal')} className="hover:text-white bg-transparent border-none p-0 cursor-pointer text-xs font-sans">
               {TRANSLATIONS['footer.legal.cookies'][currentLang]}
             </button>
+            <button onClick={() => onOpenModal('sitemap-modal')} className="hover:text-white bg-transparent border-none p-0 cursor-pointer text-xs font-sans">
+              {TRANSLATIONS['footer.legal.sitemap'][currentLang]}
+            </button>
+            <a href="/sitemap.xml" target="_blank" rel="noopener noreferrer" className="hover:text-blue-300 text-blue-400 bg-transparent border-none p-0 cursor-pointer text-xs font-sans font-bold flex items-center gap-1">
+              <span>XML</span>
+            </a>
           </div>
 
           <p className="text-white/20 text-[11px] order-last md:order-none text-center md:text-right font-sans">
-            © 2026 Documatch.eu — Tous droits réservés.
+            © 2026 Documatch.eu — {currentLang === 'fr' ? 'Tous droits réservés.' : currentLang === 'es' ? 'Todos los derechos reservados.' : currentLang === 'de' ? 'Alle Rechte vorbehalten.' : currentLang === 'nl' ? 'Alle rechten voorbehouden.' : 'All rights reserved.'}
           </p>
 
           <div className="flex gap-2 flex-wrap justify-center items-center text-[10px] font-semibold uppercase">
             {[
-              { code: 'fr', flag: '🇫🇷', label: { fr: 'France', es: 'Francia', en: 'France' }, lang: 'fr' as Language },
-              { code: 'es', flag: '🇪🇸', label: { fr: 'Espagne', es: 'España', en: 'Spain' }, lang: 'es' as Language },
-              { code: 'be', flag: '🇧🇪', label: { fr: 'Belgique', es: 'Bélgica', en: 'Belgium' }, lang: 'fr' as Language },
-              { code: 'ch', flag: '🇨🇭', label: { fr: 'Suisse', es: 'Suiza', en: 'Switzerland' }, lang: 'fr' as Language },
-              { code: 'lu', flag: '🇱🇺', label: { fr: 'Luxembourg', es: 'Luxemburgo', en: 'Luxembourg' }, lang: 'fr' as Language },
-              { code: 'de', flag: '🇩🇪', label: { fr: 'Allemagne', es: 'Alemania', en: 'Germany' }, lang: 'en' as Language },
-              { code: 'nl', flag: '🇳🇱', label: { fr: 'Pays-Bas', es: 'Holanda', en: 'Netherlands' }, lang: 'en' as Language },
+              { code: 'fr', flag: '🇫🇷', label: { fr: 'France', es: 'Francia', en: 'France', de: 'Frankreich', nl: 'Frankrijk' }, lang: 'fr' as Language },
+              { code: 'es', flag: '🇪🇸', label: { fr: 'Espagne', es: 'España', en: 'Spain', de: 'Spanien', nl: 'Spanje' }, lang: 'es' as Language },
+              { code: 'be', flag: '🇧🇪', label: { fr: 'Belgique', es: 'Bélgica', en: 'Belgium', de: 'Belgien', nl: 'België' }, lang: 'fr' as Language },
+              { code: 'ch', flag: '🇨🇭', label: { fr: 'Suisse', es: 'Suiza', en: 'Switzerland', de: 'Schweiz', nl: 'Zwitserland' }, lang: 'fr' as Language },
+              { code: 'lu', flag: '🇱🇺', label: { fr: 'Luxembourg', es: 'Luxemburgo', en: 'Luxembourg', de: 'Luxemburg', nl: 'Luxemburg' }, lang: 'fr' as Language },
+              { code: 'de', flag: '🇩🇪', label: { fr: 'Allemagne', es: 'Alemania', en: 'Germany', de: 'Deutschland', nl: 'Duitsland' }, lang: 'de' as Language },
+              { code: 'nl', flag: '🇳🇱', label: { fr: 'Pays-Bas', es: 'Países Bajos', en: 'Netherlands', de: 'Niederlande', nl: 'Nederland' }, lang: 'nl' as Language },
             ].map((country) => {
               const isSelected = currentCountry === country.code;
               return (

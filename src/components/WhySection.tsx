@@ -10,12 +10,16 @@ export const WhySection: React.FC<WhySectionProps> = ({ currentLang }) => {
   const getTagText = () => {
     if (currentLang === 'fr') return 'POURQUOI CE DIAGNOSTIC ?';
     if (currentLang === 'es') return '¿POR QUÉ ESTE DIAGNÓSTICO?';
+    if (currentLang === 'de') return 'WARUM DIESE DIAGNOSE?';
+    if (currentLang === 'nl') return 'WAAROM DEZE ANALYSE?';
     return 'WHY THIS DIAGNOSTIC?';
   };
 
   const getSectionTitle = () => {
     if (currentLang === 'fr') return 'La réforme documentaire 2026 vous concerne directement';
     if (currentLang === 'es') return 'La reforma documental 2026 le afecta directamente';
+    if (currentLang === 'de') return 'Die E-Rechnungspflicht & GoBD betreffen Ihr Unternehmen direkt';
+    if (currentLang === 'nl') return 'De verplichte e-invoicing betreft uw organisatie rechtstreeks';
     return 'European document reforms affect your business directly';
   };
 
@@ -24,6 +28,10 @@ export const WhySection: React.FC<WhySectionProps> = ({ currentLang }) => {
       return "À partir du 1er septembre 2026, la facturation électronique B2B devient obligatoire en France. Les organisations non conformes s'exposent à des pénalités financières et à un risque opérationnel majeur. Êtes-vous prêt ?";
     } else if (currentLang === 'es') {
       return "A partir del 2026, la facturación electrónica B2B será obligatoria en España (Ley Crea y Crece). Las empresas no preparadas se exponen a sanciones de hasta 10.000 € y riesgos operativos graves. ¿Está preparado?";
+    } else if (currentLang === 'de') {
+      return "Seit dem 1. Januar 2025 gilt in Deutschland der Vorrang der E-Rechnung im B2B-Bereich. Unternehmen müssen strukturierte E-Rechnungen empfangen und rechtssicher archivieren können. Ist Ihr System bereit?";
+    } else if (currentLang === 'nl') {
+      return "Met de Europese richtlijnen en Peppol-verplichtingen moeten bedrijven voorbereid zijn op B2B e-invoicing. Niet-conforme systemen riskeren verwerkingsproblemen en boetes. Bent u klaar?";
     } else {
       return "With the B2B e-invoicing laws in Germany (GoBD/Wachstumschancengesetz) and the Netherlands (Peppol), European businesses face strict regulatory and audit-proof workflows. Are you compliant?";
     }
@@ -74,6 +82,52 @@ export const WhySection: React.FC<WhySectionProps> = ({ currentLang }) => {
           icon: <Cloud className="text-[#2563eb]" size={20} />,
           title: 'Asesoramiento independiente',
           desc: 'Documatch.eu es 100% neutral. No vendemos licencias, nuestro único rol es guiarle hacia la mejor herramienta.',
+        },
+      ];
+    } else if (currentLang === 'de') {
+      return [
+        {
+          icon: <Shield className="text-[#2563eb]" size={20} />,
+          title: 'Rechtssicherheit & GoBD',
+          desc: 'Wachstumschancengesetz, XRechnung, ZUGFeRD, Peppol — decken Sie Compliance-Lücken rechtzeitig auf.',
+        },
+        {
+          icon: <Zap className="text-[#2563eb]" size={20} />,
+          title: 'Prozesseffizienz',
+          desc: 'Konkrete Produktivitätsgewinne erkennen: Automatische Freigabeworkflows, OCR-Erfassung & ERP-Abgleich.',
+        },
+        {
+          icon: <BarChart3 className="text-[#2563eb]" size={20} />,
+          title: 'Neutrale Anbietervergleiche',
+          desc: 'Über 200 geprüfte DMS-Lösungen. Erhalten Sie eine auf Ihre Unternehmensgröße abgestimmte Shortlist.',
+        },
+        {
+          icon: <Cloud className="text-[#2563eb]" size={20} />,
+          title: 'Unabhängige Beratung',
+          desc: 'Documatch.eu ist 100% unabhängig. Wir verkaufen keine Softwarelizenzen, sondern beraten neutral.',
+        },
+      ];
+    } else if (currentLang === 'nl') {
+      return [
+        {
+          icon: <Shield className="text-[#2563eb]" size={20} />,
+          title: 'Wettelijke naleving',
+          desc: 'Peppol/UBL e-invoicing, eIDAS en e-archivering — identificeer uw knelpunten voor de deadline.',
+        },
+        {
+          icon: <Zap className="text-[#2563eb]" size={20} />,
+          title: 'Operationele efficiëntie',
+          desc: 'Ontdek directe productiviteitswinst: automatische factuurherkenning, goedkeuringsflows en ERP-koppelingen.',
+        },
+        {
+          icon: <BarChart3 className="text-[#2563eb]" size={20} />,
+          title: 'Onafhankelijke vergelijking',
+          desc: 'Meer dan 200 DMS-pakketten geanalyseerd. Ontvang een shortlist op maat van uw organisatie en ERP.',
+        },
+        {
+          icon: <Cloud className="text-[#2563eb]" size={20} />,
+          title: '100% Onafhankelijk advies',
+          desc: 'Documatch.eu verkoopt geen licenties. Ons enige doel is u te begeleiden naar het beste DMS-pakket.',
         },
       ];
     } else {

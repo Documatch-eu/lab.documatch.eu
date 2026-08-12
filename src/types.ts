@@ -1,9 +1,11 @@
-export type Language = 'fr' | 'es' | 'en';
+export type Language = 'fr' | 'es' | 'en' | 'de' | 'nl';
 
 export interface Option {
   fr: string;
   es: string;
   en: string;
+  de?: string;
+  nl?: string;
   s: number; // Score value
 }
 
@@ -14,6 +16,8 @@ export interface Question {
   tagFr: string;
   tagEs: string;
   tagEn: string;
+  tagDe?: string;
+  tagNl?: string;
   fr: {
     q: string;
     hint?: string;
@@ -23,6 +27,14 @@ export interface Question {
     hint?: string;
   };
   en: {
+    q: string;
+    hint?: string;
+  };
+  de?: {
+    q: string;
+    hint?: string;
+  };
+  nl?: {
     q: string;
     hint?: string;
   };
@@ -44,6 +56,8 @@ export interface AxisConfig {
     fr: string;
     es: string;
     en: string;
+    de?: string;
+    nl?: string;
   };
   color: string;
 }
@@ -53,5 +67,7 @@ export interface TranslationSet {
     fr: string;
     es: string;
     en: string;
+    de?: string;
+    nl?: string;
   };
 }

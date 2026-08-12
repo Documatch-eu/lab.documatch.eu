@@ -92,13 +92,18 @@ export default function App() {
     const parseHashLang = (): Language => {
       const hash = window.location.hash;
       if (hash.includes('/es')) return 'es';
+      if (hash.includes('/de')) return 'de';
+      if (hash.includes('/nl')) return 'nl';
       if (hash.includes('/en')) return 'en';
       if (hash.includes('/fr')) return 'fr';
       
       const navLang = window.navigator.language?.toLowerCase() || '';
       if (navLang.startsWith('es')) return 'es';
+      if (navLang.startsWith('de')) return 'de';
+      if (navLang.startsWith('nl')) return 'nl';
+      if (navLang.startsWith('en')) return 'en';
       if (navLang.startsWith('fr')) return 'fr';
-      return 'fr'; // default as per instructions
+      return 'fr'; // default
     };
 
     const initialLang = parseHashLang();
@@ -110,6 +115,10 @@ export default function App() {
       if (!localStorage.getItem('documatch_country')) {
         if (initialLang === 'es') {
           setCurrentCountry('es');
+        } else if (initialLang === 'de') {
+          setCurrentCountry('de');
+        } else if (initialLang === 'nl') {
+          setCurrentCountry('nl');
         } else if (initialLang === 'en') {
           setCurrentCountry('de');
         } else {
@@ -125,8 +134,12 @@ export default function App() {
       // Auto-update country if needed to stay synchronized with hash
       if (newLang === 'es') {
         setCurrentCountry('es');
+      } else if (newLang === 'de') {
+        setCurrentCountry('de');
+      } else if (newLang === 'nl') {
+        setCurrentCountry('nl');
       } else if (newLang === 'en') {
-        setCurrentCountry(prev => (prev === 'de' || prev === 'nl' ? prev : 'de'));
+        setCurrentCountry('de');
       } else if (newLang === 'fr') {
         setCurrentCountry(prev => (['fr', 'be', 'ch', 'lu'].includes(prev) ? prev : 'fr'));
       }
@@ -311,8 +324,12 @@ export default function App() {
     window.location.hash = `/${lang}`;
     if (lang === 'es') {
       setCurrentCountry('es');
+    } else if (lang === 'de') {
+      setCurrentCountry('de');
+    } else if (lang === 'nl') {
+      setCurrentCountry('nl');
     } else if (lang === 'en') {
-      setCurrentCountry(prev => (prev === 'de' || prev === 'nl' ? prev : 'de'));
+      setCurrentCountry('de');
     } else if (lang === 'fr') {
       setCurrentCountry(prev => (['fr', 'be', 'ch', 'lu'].includes(prev) ? prev : 'fr'));
     }
@@ -443,6 +460,9 @@ export default function App() {
   };
 
   const handleOpenModal = (id: string) => {
+    if (id === 'cookies-modal' || id === 'cookie-banner') {
+      window.dispatchEvent(new CustomEvent('open-cookie-banner'));
+    }
     setActiveModal(id);
   };
 

@@ -25,6 +25,18 @@ const PORT = 3000;
 app.use(express.json());
 app.use(express.static(path.join(process.cwd(), "public")));
 
+// Serve XML Sitemap
+app.get("/sitemap.xml", (req, res) => {
+  res.header("Content-Type", "application/xml; charset=utf-8");
+  res.sendFile(path.join(process.cwd(), "public", "sitemap.xml"));
+});
+
+// Serve robots.txt
+app.get("/robots.txt", (req, res) => {
+  res.header("Content-Type", "text/plain; charset=utf-8");
+  res.sendFile(path.join(process.cwd(), "public", "robots.txt"));
+});
+
 // API route to submit form
 app.post("/api/submit-form", async (req, res) => {
   try {

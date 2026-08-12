@@ -27,6 +27,20 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
           <span className="text-[#fbbf24]">nuevas obligaciones documentales de 2026?</span>
         </h1>
       );
+    } else if (currentLang === 'de') {
+      return (
+        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Ist Ihr Unternehmen bereit für die <br />
+          <span className="text-[#fbbf24]">neue E-Rechnungspflicht &amp; GoBD 2025/2026?</span>
+        </h1>
+      );
+    } else if (currentLang === 'nl') {
+      return (
+        <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
+          Is uw organisatie voorbereid op de <br />
+          <span className="text-[#fbbf24]">nieuwe verplichte E-invoicing 2026?</span>
+        </h1>
+      );
     } else {
       return (
         <h1 className="font-sans font-extrabold text-3xl sm:text-4xl md:text-5xl text-white leading-tight tracking-tight mb-6">
@@ -42,6 +56,10 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
       return "20 questions clés pour évaluer la maturité documentaire de votre organisation face à la facturation électronique, à l'archivage légal et aux nouvelles exigences réglementaires françaises.";
     } else if (currentLang === 'es') {
       return "20 cuestiones para evaluar la madurez documental de su organización frente a la facturación electrónica, el archivo legal y las nuevas exigencias reglamentarias.";
+    } else if (currentLang === 'de') {
+      return "20 gezielte Fragen zur Bewertung des Reifegrads Ihres Dokumentenmanagements bezüglich E-Rechnungspflicht (Wachstumschancengesetz), GoBD und digitaler Archivierung.";
+    } else if (currentLang === 'nl') {
+      return "20 essentiële vragen om de digitale volwassenheid van uw documentbeheer te toetsen aan verplichte e-invoicing (Peppol/UBL) en wettelijke archivering.";
     } else {
       return "20 questions to assess your document management maturity regarding electronic invoicing, legal archiving, and new compliance standards.";
     }
@@ -58,6 +76,18 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
       return (
         <span>
           A partir de <strong className="text-[#fbbf24] font-bold">2026</strong>, todas las empresas españolas deberán cumplir con la facturación electrónica obligatoria (<strong className="text-[#fbbf24] font-bold">Ley Crea y Crece</strong>). Las empresas no preparadas deberán adaptar sus procesos, herramientas y gobernanza.
+        </span>
+      );
+    } else if (currentLang === 'de') {
+      return (
+        <span>
+          Seit dem <strong className="text-[#fbbf24] font-bold">1. Januar 2025</strong> gilt in Deutschland der Vorrang für E-Rechnungen im B2B-Bereich (Wachstumschancengesetz). Nicht vorbereitete Unternehmen riskieren den Verlust des Vorsteuerabzugs und schwere GoBD-Beanstandungen.
+        </span>
+      );
+    } else if (currentLang === 'nl') {
+      return (
+        <span>
+          Met de verplichting voor <strong className="text-[#fbbf24] font-bold">B2B e-invoicing</strong> via het Peppol-netwerk moeten organisaties voorbereid zijn op gestructureerde UBL-facturen. Niet-conforme systemen eisen dringende herinrichting.
         </span>
       );
     } else {
@@ -84,6 +114,20 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
         'Riesgos prioritarios identificados',
         'Recomendaciones entre +50 soluciones referenciadas',
       ];
+    } else if (currentLang === 'de') {
+      return [
+        'DMS-Reifegrad-Score (/100)',
+        'E-Rechnungs- & GoBD-Bereitschaftsstufe',
+        'Priorisierte Nichteinhaltungsrisiken',
+        'Anbieterempfehlungen aus +50 geprüften Systemen',
+      ];
+    } else if (currentLang === 'nl') {
+      return [
+        'Documentvolwassenheidsscore (/100)',
+        'Gereedheidsniveau voor verplichte e-invoicing',
+        'Geprioriteerde compliancerisico\'s',
+        'Aanbevelingen uit 50+ getoetste DMS-pakketten',
+      ];
     } else {
       return [
         'Document maturity score (/100)',
@@ -108,6 +152,20 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
         { num: '5 min', label: 'Duración estimada' },
         { num: '100%', label: 'Gratis y Confidencial' },
         { num: '+50', label: 'Soluciones GED y DMS Comparadas' },
+      ];
+    } else if (currentLang === 'de') {
+      return [
+        { num: '20', label: 'Schlüsselfragen' },
+        { num: '5 min', label: 'Geschätzte Dauer' },
+        { num: '100%', label: 'Kostenlos & Vertraulich' },
+        { num: '+50', label: 'Verglichene DMS-Systeme' },
+      ];
+    } else if (currentLang === 'nl') {
+      return [
+        { num: '20', label: 'Essentiële vragen' },
+        { num: '5 min', label: 'Geschatte tijd' },
+        { num: '100%', label: 'Gratis & Vertrouwelijk' },
+        { num: '+50', label: 'Vergeleken DMS-pakketten' },
       ];
     } else {
       return [
@@ -134,6 +192,20 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
         { icon: <Clock size={14} className="text-sky-400" />, text: 'Sin registro obligatorio' },
         { icon: <Scale size={14} className="text-sky-400" />, text: 'Comparador 100% independiente' },
       ];
+    } else if (currentLang === 'de') {
+      return [
+        { icon: <Shield size={14} className="text-sky-400" />, text: 'DSGVO-konform' },
+        { icon: <Lock size={14} className="text-sky-400" />, text: 'Sichere Datenverarbeitung' },
+        { icon: <Clock size={14} className="text-sky-400" />, text: 'Keine Registrierung erforderlich' },
+        { icon: <Scale size={14} className="text-sky-400" />, text: '100% unabhängiges Portal' },
+      ];
+    } else if (currentLang === 'nl') {
+      return [
+        { icon: <Shield size={14} className="text-sky-400" />, text: 'AVG / GDPR conform' },
+        { icon: <Lock size={14} className="text-sky-400" />, text: 'Beveiligde verwerking' },
+        { icon: <Clock size={14} className="text-sky-400" />, text: 'Geen verplichte registratie' },
+        { icon: <Scale size={14} className="text-sky-400" />, text: '100% onafhankelijk vergelijk' },
+      ];
     } else {
       return [
         { icon: <Shield size={14} className="text-sky-400" />, text: 'GDPR Compliant' },
@@ -153,7 +225,7 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
       <div className="relative max-w-5xl mx-auto text-center z-10">
         {/* Eyebrow Pill */}
         <div className="inline-flex items-center gap-1.5 text-[11px] font-extrabold tracking-widest text-[#fbbf24] uppercase border border-[#fbbf24]/30 rounded-full px-4 py-1 mb-8 bg-amber-500/5">
-          <span>★ {currentLang === 'fr' ? 'DIAGNOSTIC OFFICIEL DOCUMATCH — ÉDITION 2026' : currentLang === 'es' ? 'DIAGNÓSTICO OFICIAL DOCUMATCH — EDICIÓN 2026' : 'OFFICIAL DOCUMATCH DIAGNOSTIC — 2026 EDITION'}</span>
+          <span>★ {currentLang === 'fr' ? 'DIAGNOSTIC OFFICIEL DOCUMATCH — ÉDITION 2026' : currentLang === 'es' ? 'DIAGNÓSTICO OFICIAL DOCUMATCH — EDICIÓN 2026' : currentLang === 'de' ? 'OFFIZIELLE DOCUMATCH DIAGNOSE — AUSGABE 2026' : currentLang === 'nl' ? 'OFFICIËLE DOCUMATCH DIAGNOSE — EDITIE 2026' : 'OFFICIAL DOCUMATCH DIAGNOSTIC — 2026 EDITION'}</span>
         </div>
 
         {/* Dynamic Highlighted Title */}
@@ -193,7 +265,9 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
             <h4 className="text-[10px] font-bold uppercase tracking-widest text-slate-400/80 mb-3">
               {currentLang === 'fr' && 'À LA FIN DU DIAGNOSTIC, OBTENEZ :'}
               {currentLang === 'es' && 'AL FINAL DEL DIAGNÓSTICO, OBTENGA :'}
-              {currentLang === 'en' && 'AT THE END OF THE DIAGNOSTIC, GET:'}
+              {currentLang === 'de' && 'NACH DER DIAGNOSE ERHALTEN SIE:'}
+              {currentLang === 'nl' && 'AAN HET EINDE VAN DE ANALYSE ONTVANGT U:'}
+              {(currentLang === 'en' || (!['fr', 'es', 'de', 'nl'].includes(currentLang))) && 'AT THE END OF THE DIAGNOSTIC, GET:'}
             </h4>
             
             {/* 2x2 Grid of green checklists */}
@@ -220,6 +294,10 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
                   ? 'Reprendre mon diagnostic'
                   : currentLang === 'es'
                   ? 'Reanudar mi diagnóstico'
+                  : currentLang === 'de'
+                  ? 'Diagnose fortsetzen'
+                  : currentLang === 'nl'
+                  ? 'Hervat mijn diagnose'
                   : 'Resume my diagnostic'
                 : TRANSLATIONS['btn.start'][currentLang]}
             </span>
@@ -235,6 +313,10 @@ export const Hero: React.FC<HeroProps> = ({ currentLang, onStartQuiz, hasSavedPr
                 ? 'Recommencer à zéro'
                 : currentLang === 'es'
                 ? 'Comenzar de nuevo'
+                : currentLang === 'de'
+                ? 'Neu starten'
+                : currentLang === 'nl'
+                ? 'Opnieuw beginnen'
                 : 'Restart fresh'}
             </button>
           )}
