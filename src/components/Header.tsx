@@ -1,7 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Language } from '../types';
 import { TRANSLATIONS } from '../data/translations';
-import { ShieldAlert, ChevronDown, HelpCircle, Menu, X } from 'lucide-react';
+import { ShieldAlert, ChevronDown, HelpCircle, Menu, X, Home, Globe, Check } from 'lucide-react';
 import { Logo } from './Logo';
 
 interface HeaderProps {
@@ -17,21 +17,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenModal,
   onHomeClick,
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
-    };
-  }, []);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const getUrgencyText = () => {
     if (currentLang === 'fr') {
@@ -47,13 +33,15 @@ export const Header: React.FC<HeaderProps> = ({
     }
   };
 
-  const LANGUAGES: { code: Language; name: string }[] = [
-    { code: 'fr', name: 'Français' },
-    { code: 'es', name: 'Español' },
-    { code: 'en', name: 'English' },
-    { code: 'de', name: 'Deutsch' },
-    { code: 'nl', name: 'Nederlands' },
+  const LANGUAGES: { code: Language; name: string; flag: string }[] = [
+    { code: 'fr', name: 'Français', flag: '🇫🇷' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+    { code: 'en', name: 'English', flag: '🇬🇧' },
+    { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+    { code: 'nl', name: 'Nederlands', flag: '🇳🇱' },
   ];
+
+  const currentLangObj = LANGUAGES.find((l) => l.code === currentLang) || LANGUAGES[0];
 
   return (
     <header id="site-header" className="bg-[#0f1a2c] sticky top-0 z-50 shadow-md border-b border-white/5 print:hidden">
@@ -68,31 +56,41 @@ export const Header: React.FC<HeaderProps> = ({
         </span>
       </div>
 
-      {/* --- MAIN HEADER --- */}
-      <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
+      {/* --- MAIN CLEAN HEADER --- */}
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-2 sm:gap-4">
         {/* Logo */}
         <button 
           onClick={onHomeClick} 
-          className="flex items-center gap-1.5 sm:gap-2.5 decoration-transparent bg-transparent border-0 cursor-pointer text-left p-0"
+          className="flex items-center gap-2 sm:gap-3 decoration-transparent bg-transparent border-0 cursor-pointer text-left p-0"
         >
           <Logo size="sm" />
-          <div className="flex items-center">
-            <span className="font-sans font-bold text-lg sm:text-2xl text-white leading-none tracking-tight">
-              Docu<span className="text-[#2563eb]">match</span>
-            </span>
-            <span className="text-[10px] sm:text-[11px] font-bold tracking-wider text-[#f59e0b] uppercase bg-[#2e3748] border border-[#f59e0b] rounded-[6px] px-1.5 sm:px-2 py-0.5 ml-1.5 sm:ml-2.5 leading-none">
+          <div className="flex flex-col items-start justify-center">
+            <span className="font-sans font-bold text-[20px] sm:text-[26.5px] text-[#fbbf24] leading-none tracking-tight">
               LAB
+            </span>
+            <span className="text-[11px] sm:text-[12.5px] font-medium text-white leading-none mt-1">
+              by Documatch
             </span>
           </div>
         </button>
 
         {/* Right Nav Controls */}
-        <div className="flex items-center gap-2 sm:gap-5">
-          {/* Urgency Badge (Matches image perfectly, hidden on small screens to prevent layout squeeze on mobile) */}
+        <div className="flex items-center gap-2 sm:gap-4">
+          {/* Urgency Badge (hidden on very small screens) */}
           <div className="hidden sm:flex items-center gap-2 text-[11px] font-semibold text-[#fbbf24] bg-amber-500/10 border border-amber-500/20 rounded-full px-3 py-1">
             <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse" />
             <span>{getUrgencyText()}</span>
           </div>
+
+          {/* Home Link (visible on lg+) */}
+          <button
+            id="btn-desktop-home"
+            onClick={onHomeClick}
+            className="hidden lg:flex items-center gap-1.5 text-xs font-semibold text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3 py-1.5 transition-all cursor-pointer"
+          >
+            <Home size={13} className="text-[#3b82f6]" />
+            <span>{TRANSLATIONS['btn.home'][currentLang]}</span>
+          </button>
 
           {/* Quick Guide Link (visible on md+) */}
           <button
@@ -112,92 +110,57 @@ export const Header: React.FC<HeaderProps> = ({
             <span>FAQ</span>
           </button>
 
-          {/* Custom Responsive Dropdown for Smartphones & Segmented Selector for Desktops */}
-          <div className="relative" ref={dropdownRef}>
-            {/* Mobile Touch-Friendly Dropdown Button (Visible on mobile only) */}
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="sm:hidden flex items-center gap-1.5 px-3 py-1.5 bg-[#1e293b]/80 border border-white/10 rounded-lg text-xs font-bold text-white uppercase cursor-pointer min-h-[34px] min-w-[72px] justify-between shadow-sm active:bg-[#2d3a50] transition-colors"
-            >
-              <span className="flex items-center gap-1">
-                <span className="text-[#2563eb] text-[15px] leading-none select-none">•</span>
-                {currentLang}
-              </span>
-              <ChevronDown size={14} className={`text-white/60 transition-transform duration-200 ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            {/* Desktop Segmented Control (Visible on sm and larger) */}
-            <div className="hidden sm:flex items-center bg-[#1e293b]/60 border border-white/5 rounded-lg p-0.5" id="lang-selector">
-              {LANGUAGES.map((l) => (
-                <button
-                  key={l.code}
-                  onClick={() => onLanguageChange(l.code)}
-                  className={`px-2 sm:px-2 py-1 sm:py-1 rounded-md text-xs font-bold uppercase transition-all cursor-pointer min-h-[30px] sm:min-h-[32px] min-w-[28px] sm:min-w-[32px] flex items-center justify-center ${
-                    currentLang === l.code 
-                      ? 'bg-[#2563eb] text-white shadow-sm' 
-                      : 'text-white/45 hover:text-white/80'
-                  }`}
-                >
-                  {l.code}
-                </button>
-              ))}
-            </div>
-
-            {/* Custom Popover Dropdown Menu (Renders as a direct floating layer above layout constraints on mobile) */}
-            {isOpen && (
-              <div className="sm:hidden absolute right-0 mt-2 w-36 bg-[#15233c] border border-white/10 rounded-lg shadow-2xl overflow-hidden z-[110] animate-in fade-in slide-in-from-top-1 duration-100">
-                {LANGUAGES.map((l) => (
-                  <button
-                    key={l.code}
-                    onClick={() => {
-                      onLanguageChange(l.code);
-                      setIsOpen(false);
-                    }}
-                    className={`w-full px-3 py-2.5 text-left text-xs font-bold uppercase transition-all flex items-center justify-between cursor-pointer border-b border-white/5 last:border-0 ${
-                      currentLang === l.code
-                        ? 'bg-[#2563eb] text-white'
-                        : 'text-white/70 hover:bg-[#1e2d45] hover:text-white'
-                    }`}
-                  >
-                    <span>{l.name}</span>
-                    {currentLang === l.code && <span className="w-1.5 h-1.5 bg-white rounded-full" />}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-
-          {/* Mobile Hamburger Button */}
+          {/* Clean Hamburger Menu Button (opens the full drawer with Language selector & Navigation) */}
           <button
-            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden flex items-center justify-center p-2 rounded-lg text-white/80 hover:text-white hover:bg-white/5 border border-white/10 transition-colors cursor-pointer min-h-[34px]"
-            aria-label="Toggle menu"
+            id="btn-toggle-menu"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all cursor-pointer min-h-[36px]"
+            aria-label="Menu et Langues"
           >
-            {isMobileMenuOpen ? <X size={18} /> : <Menu size={18} />}
+            <span className="text-sm">{currentLangObj.flag}</span>
+            <span className="text-xs font-bold uppercase tracking-wider text-white/90 hidden xs:inline">{currentLangObj.code}</span>
+            {isMenuOpen ? <X size={16} className="text-white/80" /> : <Menu size={16} className="text-white/80" />}
           </button>
         </div>
       </div>
 
-      {/* --- MOBILE SLIDE-DOWN MENU --- */}
-      {isMobileMenuOpen && (
-        <div className="md:hidden border-t border-white/5 bg-[#0e1624] px-4 py-4 space-y-3 shadow-inner">
-          {/* Urgency Badge */}
-          <div className="flex items-center gap-2 text-[11px] font-semibold text-[#fbbf24] bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 w-full">
+      {/* --- SLIDE-DOWN HAMBURGER & LANGUAGE MENU --- */}
+      {isMenuOpen && (
+        <div className="border-t border-white/10 bg-[#0e1624]/95 backdrop-blur-md px-4 py-4 space-y-4 shadow-2xl animate-in fade-in slide-in-from-top-2 duration-150">
+          {/* Urgency Badge on small screens */}
+          <div className="sm:hidden flex items-center gap-2 text-[11px] font-semibold text-[#fbbf24] bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 w-full">
             <span className="w-1.5 h-1.5 bg-red-500 rounded-full animate-pulse flex-shrink-0" />
             <span>{getUrgencyText()}</span>
           </div>
 
-          <div className="flex flex-col gap-2">
+          {/* Navigation Links */}
+          <div className="space-y-1.5">
+            {/* Inicio / Home button */}
+            <button
+              id="btn-menu-home"
+              onClick={() => {
+                if (onHomeClick) onHomeClick();
+                setIsMenuOpen(false);
+              }}
+              className="flex items-center justify-between gap-1.5 text-xs font-semibold text-white/90 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3.5 py-2.5 transition-all cursor-pointer w-full text-left"
+            >
+              <div className="flex items-center gap-2.5">
+                <Home size={15} className="text-[#3b82f6]" />
+                <span className="font-bold">{TRANSLATIONS['btn.home'][currentLang]}</span>
+              </div>
+              <ChevronDown size={14} className="text-white/40 -rotate-90" />
+            </button>
+
             {/* Quick Guide Link */}
             <button
               onClick={() => {
                 onOpenModal('guide-modal');
-                setIsMobileMenuOpen(false);
+                setIsMenuOpen(false);
               }}
-              className="flex items-center justify-between gap-1.5 text-xs font-semibold text-white/80 hover:text-white bg-white/5 active:bg-white/10 border border-white/10 rounded-lg px-3.5 py-3 transition-all cursor-pointer w-full text-left"
+              className="flex items-center justify-between gap-1.5 text-xs font-semibold text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3.5 py-2.5 transition-all cursor-pointer w-full text-left"
             >
-              <div className="flex items-center gap-2">
-                <ShieldAlert size={14} className="text-[#fbbf24]" />
+              <div className="flex items-center gap-2.5">
+                <ShieldAlert size={15} className="text-[#fbbf24]" />
                 <span>{TRANSLATIONS['btn.read.guide'][currentLang]}</span>
               </div>
               <ChevronDown size={14} className="text-white/40 -rotate-90" />
@@ -207,16 +170,50 @@ export const Header: React.FC<HeaderProps> = ({
             <button
               onClick={() => {
                 onOpenModal('faq-modal');
-                setIsMobileMenuOpen(false);
+                setIsMenuOpen(false);
               }}
-              className="flex items-center justify-between gap-1.5 text-xs font-semibold text-white/80 hover:text-white bg-white/5 active:bg-white/10 border border-white/10 rounded-lg px-3.5 py-3 transition-all cursor-pointer w-full text-left"
+              className="flex items-center justify-between gap-1.5 text-xs font-semibold text-white/80 hover:text-white bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3.5 py-2.5 transition-all cursor-pointer w-full text-left"
             >
-              <div className="flex items-center gap-2">
-                <HelpCircle size={14} className="text-[#3b82f6]" />
+              <div className="flex items-center gap-2.5">
+                <HelpCircle size={15} className="text-[#3b82f6]" />
                 <span>FAQ</span>
               </div>
               <ChevronDown size={14} className="text-white/40 -rotate-90" />
             </button>
+          </div>
+
+          {/* Language Selection Grid */}
+          <div className="pt-2 border-t border-white/10">
+            <div className="flex items-center gap-2 px-1 mb-2.5 text-[11px] font-bold tracking-wider text-white/50 uppercase">
+              <Globe size={13} className="text-[#3b82f6]" />
+              <span>{TRANSLATIONS['menu.language'][currentLang]}</span>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-2">
+              {LANGUAGES.map((l) => {
+                const isSelected = currentLang === l.code;
+                return (
+                  <button
+                    key={l.code}
+                    id={`btn-lang-${l.code}`}
+                    onClick={() => {
+                      onLanguageChange(l.code);
+                      setIsMenuOpen(false);
+                    }}
+                    className={`flex items-center justify-between px-3 py-2.5 rounded-lg text-xs font-bold transition-all cursor-pointer border ${
+                      isSelected
+                        ? 'bg-[#2563eb] text-white border-[#3b82f6] shadow-md'
+                        : 'bg-white/5 hover:bg-white/10 text-white/80 hover:text-white border-white/5'
+                    }`}
+                  >
+                    <div className="flex items-center gap-2">
+                      <span className="text-base">{l.flag}</span>
+                      <span>{l.name}</span>
+                    </div>
+                    {isSelected && <Check size={14} className="text-white flex-shrink-0" />}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </div>
       )}

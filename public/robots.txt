@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://documatch.eu/sitemap.xml
+Sitemap: https://www.documatch.eu/sitemap.xml

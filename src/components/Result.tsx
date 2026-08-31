@@ -4,6 +4,7 @@ import { TRANSLATIONS } from '../data/translations';
 import { AlertCircle, ArrowRight, ArrowLeft, ExternalLink, Mail, CheckCircle2, ChevronRight, Download, Printer, Share2 } from 'lucide-react';
 import { Logo } from './Logo';
 import { ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
+import { trackReportView, trackPdfDownload } from '../utils/analytics';
 
 interface ResultProps {
   currentLang: Language;
@@ -117,6 +118,7 @@ export const Result: React.FC<ResultProps> = ({
   };
 
   useEffect(() => {
+    trackReportView(finalScore);
     let displayed = 0;
     const ticker = setInterval(() => {
       displayed = Math.min(displayed + 2, finalScore);
@@ -274,6 +276,7 @@ export const Result: React.FC<ResultProps> = ({
   };
 
   const handleDownloadPdf = async () => {
+    trackPdfDownload();
     setDownloadingPdf(true);
     const isIframe = typeof window !== 'undefined' && window.self !== window.top;
     if (isIframe) {
@@ -356,12 +359,12 @@ export const Result: React.FC<ResultProps> = ({
         <div className="hidden print:flex items-center justify-between border-b-2 border-slate-200 pb-5 mb-6 text-slate-800">
           <div className="flex items-center gap-2">
             <Logo size="sm" />
-            <div className="flex items-baseline gap-1.5">
-              <span className="font-sans font-bold text-2xl text-slate-900 leading-none tracking-tight">
-                Docu<span className="text-[#2563eb]">match</span>
-              </span>
-              <span className="text-[9px] font-bold tracking-wider text-[#f59e0b] uppercase bg-slate-100 border border-[#f59e0b] rounded px-1 py-0.5 leading-none">
+            <div className="flex flex-col items-start justify-center">
+              <span className="font-sans font-bold text-xl text-slate-900 leading-none tracking-tight">
                 LAB
+              </span>
+              <span className="text-[10px] font-semibold text-slate-600 leading-none mt-0.5">
+                by Documatch
               </span>
             </div>
           </div>

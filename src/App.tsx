@@ -12,6 +12,9 @@ import { Result } from './components/Result';
 import { Modals } from './components/Modals';
 import { CookieBanner } from './components/CookieBanner';
 import { Footer } from './components/Footer';
+import { Chatbot } from './components/Chatbot';
+import { CtaPopup } from './components/CtaPopup';
+import { trackPageView, trackQuizStart, trackQuizStep, trackLeadSubmit } from './utils/analytics';
 
 export default function App() {
   const [currentLang, setCurrentLang] = useState<Language>('fr');
@@ -286,38 +289,67 @@ export default function App() {
     
     const structuredData = {
       '@context': 'https://schema.org',
-      '@type': 'Quiz',
-      'name': title,
-      'description': description,
-      'about': {
-        '@type': 'Thing',
-        'name': currentLang === 'fr' 
-          ? 'Facturation électronique B2B & Gestion Électronique de Documents (GED)' 
-          : currentLang === 'es' 
-          ? 'Facturación electrónica B2B y Gestión Documental (GED)' 
-          : 'B2B e-Invoicing & Document Management Systems (DMS)'
-      },
-      'educationalLevel': 'Professional',
-      'assesses': currentLang === 'fr' 
-        ? 'Conformité règlementaire GED et Facturation électronique 2026' 
-        : currentLang === 'es' 
-        ? 'Conformidad legal GED y Factura Electrónica' 
-        : 'Regulatory compliance for DMS and e-Invoicing standards',
-      'publisher': {
-        '@type': 'Organization',
-        'name': 'Documatch.eu',
-        'url': 'https://www.documatch.eu',
-        'logo': 'https://www.documatch.eu/assets/logo.png',
-        'contactPoint': {
-          '@type': 'ContactPoint',
-          'email': 'info@documatch.eu',
-          'contactType': 'customer support'
-        }
-      }
+      '@graph': [
+        {
+          '@type': 'WebSite',
+          '@id': 'https://www.documatch.eu/#website',
+          'url': 'https://www.documatch.eu/',
+          'name': 'Documatch Lab',
+          'description': description,
+          'inLanguage': ['fr', 'es', 'en', 'de', 'nl'],
+          'publisher': {
+            '@type': 'Organization',
+            '@id': 'https://www.documatch.eu/#organization',
+            'name': 'Documatch',
+            'url': 'https://www.documatch.eu',
+            'logo': 'https://www.documatch.eu/assets/logo.png',
+          },
+        },
+        {
+          '@type': 'Organization',
+          '@id': 'https://www.documatch.eu/#organization',
+          'name': 'Documatch',
+          'url': 'https://www.documatch.eu',
+          'logo': 'https://www.documatch.eu/assets/logo.png',
+          'contactPoint': {
+            '@type': 'ContactPoint',
+            'email': 'info@documatch.eu',
+            'contactType': 'customer support',
+            'availableLanguage': ['French', 'Spanish', 'English', 'German', 'Dutch'],
+          },
+        },
+        {
+          '@type': 'Quiz',
+          '@id': `https://www.documatch.eu/#/${currentLang}/#quiz`,
+          'name': title,
+          'description': description,
+          'inLanguage': currentLang,
+          'about': {
+            '@type': 'Thing',
+            'name': currentLang === 'fr' 
+              ? 'Facturation électronique B2B & Gestion Électronique de Documents (GED)' 
+              : currentLang === 'es' 
+              ? 'Facturación electrónica B2B y Gestión Documental (GED)' 
+              : 'B2B e-Invoicing & Document Management Systems (DMS)',
+          },
+          'educationalLevel': 'Professional',
+          'assesses': currentLang === 'fr' 
+            ? 'Conformité règlementaire GED et Facturation électronique 2026' 
+            : currentLang === 'es' 
+            ? 'Conformidad legal GED y Factura Electrónica' 
+            : 'Regulatory compliance for DMS and e-Invoicing standards',
+          'publisher': {
+            '@id': 'https://www.documatch.eu/#organization',
+          },
+        },
+      ],
     };
     
     jsonLdScript.textContent = JSON.stringify(structuredData);
-  }, [currentLang, currentCountry]);
+
+    // Track Virtual Page View for GA4
+    trackPageView(`/#/${currentLang}/${currentScreen}`, title);
+  }, [currentLang, currentCountry, currentScreen]);
 
   const handleLanguageChange = (lang: Language) => {
     setCurrentLang(lang);
@@ -342,6 +374,7 @@ export default function App() {
   };
 
   const handleStartQuiz = () => {
+    trackQuizStart(currentLang, currentCountry);
     try {
       const saved = localStorage.getItem('documatch_screen');
       if (saved && ['quiz', 'lead', 'result'].includes(saved)) {
@@ -360,6 +393,7 @@ export default function App() {
   };
 
   const handleRestartFresh = () => {
+    trackQuizStart(currentLang, currentCountry);
     setAnswers(new Array(QUESTIONS.length).fill(null));
     setCurrentQ(0);
     setLeadData({
@@ -382,6 +416,7 @@ export default function App() {
   };
 
   const handleSelectOption = (idx: number) => {
+    trackQuizStep(currentQ, QUESTIONS.length, QUESTIONS[currentQ]?.axis);
     const updated = [...answers];
     updated[currentQ] = idx;
     setAnswers(updated);
@@ -413,6 +448,7 @@ export default function App() {
   };
 
   const handleLeadSubmit = async (data: LeadData) => {
+    trackLeadSubmit(data.country || currentCountry, data.role);
     setLeadData(data);
     setCurrentScreen('result');
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -548,6 +584,20 @@ export default function App() {
         activeModal={activeModal}
         onCloseModal={handleCloseModal}
         onStartQuizFromGuide={handleStartQuiz}
+      />
+
+      {/* Multilingual AI Chatbot */}
+      <Chatbot
+        currentLang={currentLang}
+        currentCountry={currentCountry}
+        onStartQuiz={currentScreen === 'intro' ? handleStartQuiz : undefined}
+      />
+
+      {/* Auto Trigger CTA Popup (20s) */}
+      <CtaPopup
+        currentLang={currentLang}
+        onStartQuiz={handleStartQuiz}
+        isOpenEnabled={currentScreen === 'intro'}
       />
     </div>
   );

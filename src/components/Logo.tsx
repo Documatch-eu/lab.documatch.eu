@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 // @ts-ignore
-import documatchLogo from '../assets/images/documatch_logo_1784541285669.jpg';
+import documatchLocalLogo from '../assets/images/documatch_official_logo.jpg';
+
+const OFFICIAL_DOCUMATCH_LOGO_URL =
+  'https://customer-assets.emergentagent.com/job_7fe777d6-9bad-4a97-9808-a97a60a006ea/artifacts/x40hmr43_nuevo%20logo%20documatch.jpg';
 
 interface LogoProps {
   className?: string;
@@ -8,22 +11,29 @@ interface LogoProps {
 }
 
 export const Logo: React.FC<LogoProps> = ({ className = '', size = 'md' }) => {
-  // Set sizes to be exactly 20% larger than the original layout values
-  const sizeStyles = {
-    sm: { width: '3.0rem', height: '3.0rem' },
-    md: { width: '4.5rem', height: '4.5rem' },
-    lg: { width: '6.6rem', height: '6.6rem' },
+  const [imgSrc, setImgSrc] = useState<string>(OFFICIAL_DOCUMATCH_LOGO_URL);
+
+  const sizeClasses = {
+    sm: 'h-8 sm:h-9 md:h-10 max-h-10',
+    md: 'h-10 sm:h-12 max-h-12',
+    lg: 'h-14 sm:h-16 max-h-16',
   };
 
   return (
     <div
-      className={`${className} flex-shrink-0 select-none overflow-hidden flex items-center justify-center rounded-xl bg-transparent`}
-      style={sizeStyles[size]}
+      className={`${className} flex-shrink-0 select-none flex items-center justify-center rounded-none bg-transparent`}
     >
       <img
-        src={documatchLogo}
-        alt="Documatch Lab Logo"
-        className="w-full h-full object-contain select-none rounded-xl"
+        src={imgSrc}
+        alt="Documatch"
+        onError={() => {
+          if (imgSrc !== documatchLocalLogo && documatchLocalLogo) {
+            setImgSrc(documatchLocalLogo);
+          } else if (imgSrc !== '/documatch-logo.jpg') {
+            setImgSrc('/documatch-logo.jpg');
+          }
+        }}
+        className={`${sizeClasses[size]} w-auto max-w-[240px] object-contain select-none rounded-none`}
         referrerPolicy="no-referrer"
       />
     </div>

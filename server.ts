@@ -2,7 +2,24 @@ import express from "express";
 import path from "path";
 import fs from "fs";
 import { createServer as createViteServer } from "vite";
+import { GoogleGenAI } from "@google/genai";
 import { QUESTIONS } from "./src/data/questions";
+
+// Lazy-initialized Gemini AI client
+let aiClient: GoogleGenAI | null = null;
+function getGeminiClient(): GoogleGenAI | null {
+  if (!aiClient && process.env.GEMINI_API_KEY) {
+    aiClient = new GoogleGenAI({
+      apiKey: process.env.GEMINI_API_KEY,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        },
+      },
+    });
+  }
+  return aiClient;
+}
 
 // Load logo as base64 for inline email rendering
 let logoPureBase64 = "";
@@ -570,6 +587,207 @@ app.post("/api/submit-form", async (req, res) => {
   } catch (error: any) {
     console.error("API handler error:", error);
     return res.status(500).json({ error: error.message || "Internal server error" });
+  }
+});
+
+// API route for AI Chatbot (DocuBot)
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { messages, lang = "fr", country = "fr", score } = req.body;
+
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ error: "Missing or invalid 'messages' array" });
+    }
+
+    const currentLang = (typeof lang === "string" ? lang.toLowerCase() : "fr");
+    const lastUserMessage = messages[messages.length - 1]?.content || "";
+
+    const langNameMap: Record<string, { name: string; nativeName: string; specificContext: string }> = {
+      es: {
+        name: "Spanish",
+        nativeName: "Español",
+        specificContext: `
+REGULACIÓN Y CONTEXTO EN ESPAÑA:
+- Marco Legal: Ley Crea y Crece (Facturación Electrónica obligatoria B2B) y Reglamento Veri*Factu (Sistemas Informáticos de Facturación y trazabilidad AEAT).
+- Calendario: 
+  * Fase 1: Empresas con facturación superior a 8M€ (12 meses tras publicación del reglamento técnico definitivo).
+  * Fase 2: Resto de empresas, pymes y autónomos (24 meses tras reglamento técnico, previsto 2026-2027).
+- Formatos: Facturae (XML), estándares europeos (UBL, CII), plataformas de intercambio privado y solución pública estatal (FACeB2B).
+- Sanciones: Multas de hasta 10.000 € por no disponer de sistemas de facturación electrónica o no facilitar el acceso a los clientes.
+- Terminología obligatoria en español: Use "Gestión Documental", "Software Documental", "DMS" o "SGD". NUNCA use acrónimos franceses como "GED", "PDP" o "PPF" en respuestas en español.
+- Software destacado: DocuWare, Athento, DocuClass, OpenText, ELO Digital, R2 Docuo, M-Files e integraciones con ERPs (SAP, Sage 50/200, Microsoft Dynamics 365, Navision, A3Software, Odoo).`,
+      },
+      fr: {
+        name: "French",
+        nativeName: "Français",
+        specificContext: `
+RÉGLEMENTATION ET CONTEXTE EN FRANCE :
+- Cadre Légal : Réforme de la facturation électronique 2026 (Ordonnance n° 2021-1190 & Loi de Finances).
+- Calendrier officiel :
+  * 1er septembre 2026 : Réception obligatoire pour TOUTES les entreprises (TPE, PME, ETI, GE) et émission obligatoire pour Grandes Entreprises et ETI.
+  * 1er septembre 2027 : Émission obligatoire pour PME et micro-entreprises / indépendants.
+- Architecture : Système en Y avec PDP (Plateformes de Dématérialisation Partenaire immatriculées) et PPF (Portail Public de Facturation / Concentrateur public).
+- Formats du socle minimal : Factur-X (format hybride PDF/A-3 + XML), UBL 2.1, CII. Cycle de vie avec 4 statuts obligatoires (Déposée, Rejetée, Refusée, Encaissée) et e-reporting.
+- Terminologie : Gestion Électronique de Documents (GED), Système d'Archivage Électronique (SAE NF Z42-013).`,
+      },
+      de: {
+        name: "German",
+        nativeName: "Deutsch",
+        specificContext: `
+GESETZLICHE VORGABEN IN DEUTSCHLAND:
+- Gesetzlicher Rahmen: E-Rechnungspflicht für B2B-Umsätze im Rahmen des Wachstumschancengesetzes.
+- Zeitplan & Fristen:
+  * 1. Januar 2025: Zwingende Empfangsbereitschaft für alle inländischen B2B-Unternehmen (E-Rechnungsempfang).
+  * 1. Januar 2027: Ausstellungspflicht für Unternehmen mit Vorjahresumsatz > 800.000 €.
+  * 1. Januar 2028: Vollständige Ausstellungspflicht für alle übrigen Unternehmen.
+- Formate & Standards: XRechnung (reines XML) und ZUGFeRD (hybrides Format ab Version 2.0.1 / PDF/A-3 + XML), EN 16931 Konformität.
+- GoBD-Anforderungen: Revisionssichere Archivierung im Originalformat, Unveränderbarkeit, Verfahrensdokumentation.
+- Terminologie: Dokumentenmanagement-System (DMS), ECM, Revisionssichere Archivierung. Keine französischen Abkürzungen verwenden.`,
+      },
+      nl: {
+        name: "Dutch",
+        nativeName: "Nederlands",
+        specificContext: `
+WETGEVING EN CONTEXT IN NEDERLAND & EUROPA:
+- Regelgeving: E-invoicing mandaten, Peppol netwerk, ViDA (VAT in the Digital Age) EU-richtlijnen.
+- Netwerk & Formaten: Peppol e-Delivery netwerk, Peppol BIS Billing 3.0, UBL 2.1, NLCIUS standaard.
+- Deadlines: Verplicht voor leveranciers aan de Rijksoverheid; gefaseerde Europese harmonisatie voor B2B transacties richting 2026/2028.
+- Terminologie: Document Management Systeem (DMS), E-invoicing, Peppol Access Point, Revisionssichere digitale opslag.`,
+      },
+      en: {
+        name: "English",
+        nativeName: "English",
+        specificContext: `
+INTERNATIONAL & EUROPEAN REGULATORY CONTEXT:
+- Framework: European B2B E-Invoicing mandates, Directive 2014/55/EU, EN 16931, and the ViDA (VAT in the Digital Age) European initiative.
+- Architecture: Peppol 4-corner network model, national platforms, and certified partner dematerialization providers.
+- Formats: UBL (Universal Business Language), CII (Cross Industry Invoice), Factur-X/ZUGFeRD hybrid PDF/A-3.
+- Key DMS Benefits: Automated OCR extraction, multi-ERP two-way synchronization, compliant cloud archiving, and full audit trails.`,
+      },
+    };
+
+    const currentLangMeta = langNameMap[currentLang] || langNameMap.fr;
+
+    const systemInstruction = `You are DocuBot, the premier AI Document Management and Electronic Invoicing Expert for "Documatch Lab" (documatch.eu).
+Documatch Lab is Europe's leading independent comparator and maturity diagnostic platform helping companies audit their document workflows and comply with 2026 mandatory B2B e-invoicing standards.
+
+CRITICAL LANGUAGE & LOCALIZATION DIRECTIVES:
+1. STRICT MONOLINGUAL REQUIREMENT: You MUST formulate 100% of your response exclusively in ${currentLangMeta.name.toUpperCase()} (${currentLangMeta.nativeName}).
+2. NEVER MIX LANGUAGES: If responding in Spanish, write entirely in clean, professional Spanish. If responding in German, write entirely in German. If responding in Dutch, write entirely in Dutch. If responding in French, write in French.
+3. ADAPT TERMINOLOGY LOCALLY: Do NOT use France-specific acronyms (such as "GED", "PDP", "PPF", "Factur-X") when speaking Spanish, German, Dutch, or English, UNLESS specifically comparing cross-border standards. In Spanish, use "Gestión Documental" or "DMS" and "Ley Crea y Crece / Veri*Factu".
+
+${currentLangMeta.specificContext}
+
+Response Guidelines:
+- Authoritative, objective, independent and friendly tone.
+- Concise formatting: short paragraphs, bullet points (•) for lists, bold highlights for key takeaways.
+- Keep the length under 180 words for readability.
+- Independent advice: Mention that Documatch Lab evaluates over 200 software solutions objectively (DocuWare, M-Files, OpenText, Zeendoc, ELO, etc.).
+- Proactively suggest taking the free 5-minute diagnostic on Documatch Lab to audit their compliance.
+${score ? `\n[User Context: The user has completed the diagnostic with a maturity score of ${score}/100]` : ""}`;
+
+    const client = getGeminiClient();
+
+    if (client) {
+      try {
+        // Format history for Gemini SDK, filtering empty or irrelevant content
+        const validMessages = messages.filter((m: any) => m && typeof m.content === "string" && m.content.trim().length > 0);
+        
+        // Ensure alternating role order required by Gemini SDK
+        const contents = validMessages.map((m: any) => ({
+          role: m.role === "assistant" || m.role === "model" ? "model" : "user",
+          parts: [{ text: String(m.content).trim() }],
+        }));
+
+        const response = await client.models.generateContent({
+          model: "gemini-3.7-flash",
+          contents,
+          config: {
+            systemInstruction,
+            temperature: 0.5,
+            topP: 0.9,
+          },
+        });
+
+        const replyText = response.text || "";
+        if (replyText.trim()) {
+          return res.json({ reply: replyText.trim() });
+        }
+      } catch (geminiError: any) {
+        console.warn("Gemini API call failed, using intelligent rule-based knowledge fallback:", geminiError?.message || geminiError);
+      }
+    }
+
+    // Comprehensive Native Fallback Knowledge Base per language
+    const qLower = lastUserMessage.toLowerCase();
+    let reply = "";
+
+    if (currentLang === "es") {
+      if (qLower.includes("fecha") || qLower.includes("plazo") || qLower.includes("cuándo") || qLower.includes("crea y crece") || qLower.includes("2026") || qLower.includes("obligatori") || qLower.includes("sancion")) {
+        reply = `**Plazos y Sanciones de la Ley Crea y Crece en España:**\n\n• **Fase 1 (Empresas > 8M€ de facturación)**: Obligatoriedad de expedir y recibir facturas electrónicas 12 meses después de la aprobación del reglamento definitivo.\n• **Fase 2 (Pymes y Autónomos < 8M€)**: Obligatoriedad a los 24 meses (previsto 2026-2027).\n• **Sanciones**: Multas de hasta **10.000 €** por no facilitar sistemas de facturación electrónica a clientes.\n\nUn software de gestión documental homologado le permite anticiparse y automatizar todos los flujos sin riesgo.`;
+      } else if (qLower.includes("verifactu") || qLower.includes("requisito") || qLower.includes("formato") || qLower.includes("facturae") || qLower.includes("qr") || qLower.includes("aeat")) {
+        reply = `**Requisitos Técnicos Veri*Factu y Facturación en España:**\n\n• **Inalterabilidad**: Registros de facturación con encadenamiento criptográfico (hash) que impiden la alteración u ocultación de ventas.\n• **Código QR**: Obligatorio en facturas para verificación ciudadana ante la Agencia Tributaria (AEAT).\n• **Formatos admitidos**: Facturae (XML) y estándares europeos estructurados (UBL).\n• **Conservación segura**: Registro de auditoría y trazabilidad completa de cada factura durante el periodo fiscal legal.`;
+      } else if (qLower.includes("elegir") || qLower.includes("software") || qLower.includes("solución") || qLower.includes("comparar") || qLower.includes("mejor") || qLower.includes("erp") || qLower.includes("sage") || qLower.includes("sap")) {
+        reply = `**Cómo elegir el mejor software de Gestión Documental (DMS):**\n\n• **Conectividad con su ERP**: Integración bidireccional nativa con sistemas como SAP, Sage, Microsoft Dynamics, A3 o Navision.\n• **Reconocimiento OCR inteligente**: Extracción automática de datos de cabecera y líneas sin tecleo manual.\n• **Flujos de aprobación (Workflows)**: Circuitos de validación de compras, contratos y facturas con firma digital.\n• **Conformidad legal**: Homologación frente a Veri*Factu y normativas europeas.\n\nEn Documatch comparamos de forma 100% independiente más de 200 soluciones para recomendarle la más rentable.`;
+      } else if (qLower.includes("precio") || qLower.includes("coste") || qLower.includes("cuánto") || qLower.includes("roi") || qLower.includes("rentabilidad") || qLower.includes("gratis")) {
+        reply = `**Coste y Rentabilidad (ROI) de un Software Documental:**\n\n• **Diagnóstico Documatch Lab**: **100% gratuito** y sin compromiso.\n• **Coste medio de software**: Suele oscilar entre **15 € y 50 € por usuario/mes** en la nube (SaaS), según el volumen de documentos y módulos de OCR.\n• **Ahorro demostrado**: Reduce el tiempo de tramitación de facturas en un **75%** (ahorro medio de 3 a 5 horas semanales por administrativo), amortizando la inversión en menos de 6 meses.`;
+      } else {
+        reply = `¡Hola! Soy DocuBot, el asesor de Inteligencia Artificial de Documatch Lab para Gestión Documental y Facturación Electrónica en España.\n\nPuedo ayudarle con los plazos de la Ley Crea y Crece, los requisitos de Veri*Factu, la selección del software documental adecuado o la integración con su ERP. ¿Qué duda desea consultar?`;
+      }
+    } else if (currentLang === "fr") {
+      if (qLower.includes("date") || qLower.includes("calendrier") || qLower.includes("quand") || qLower.includes("obligation") || qLower.includes("2026") || qLower.includes("2027")) {
+        reply = `**Calendrier officiel de la réforme 2026 en France :**\n\n• **1er septembre 2026** : Obligation de **réception** des factures électroniques pour TOUTES les entreprises (TPE, PME, ETI, GE), et obligation d'**émission** pour les grandes entreprises et ETI.\n• **1er septembre 2027** : Obligation d'**émission** étendue aux PME et micro-entreprises.\n\nUne GED compatible vous permet d'automatiser l'intégration et l'archivage légal dès maintenant !`;
+      } else if (qLower.includes("pdp") || qLower.includes("ppf") || qLower.includes("différence") || qLower.includes("plateforme")) {
+        reply = `**Différence entre Portail Public (PPF) et PDP :**\n\n• **PPF (Portail Public de Facturation)** : Concentrateur public gratuit assurant les fonctions socles (dépôt, transmission à l'administration fiscale et annuaire central).\n• **PDP (Plateforme de Dématérialisation Partenaire)** : Prestataires privés certifiés par l'État capables de convertir les formats (Factur-X, UBL, CII), d'automatiser les flux métiers, et d'assurer les statuts du cycle de vie en direct avec votre GED/ERP.`;
+      } else if (qLower.includes("choisir") || qLower.includes("logiciel") || qLower.includes("solution") || qLower.includes("comparer") || qLower.includes("docuware") || qLower.includes("zeendoc") || qLower.includes("erp")) {
+        reply = `**Critères clés pour choisir votre logiciel GED :**\n\n• **Connecteurs ERP** : Compatibilité native avec votre logiciel comptable (Sage, Cegid, SAP, EBP, Dynamics, Odoo).\n• **Capture OCR & IA** : Reconnaissance automatique des montants HT/TTC, TVA et lignes d'articles.\n• **Workflows de validation** : Circuits de B.A.P. (Bon À Payer) et signatures électroniques.\n• **Archivage à valeur probante (SAE)** : Conservation sécurisée conforme NF Z42-013.\n\nDocumatch analyse plus de 200 solutions de façon 100% neutre pour cibler votre outil idéal.`;
+      } else if (qLower.includes("prix") || qLower.includes("coût") || qLower.includes("tarif") || qLower.includes("roi") || qLower.includes("combien") || qLower.includes("rentabilité")) {
+        reply = `**Coût et Retour sur Investissement (ROI) d'une GED :**\n\n• **Diagnostic Documatch Lab** : **100% gratuit** et immédiat.\n• **Tarif logiciel moyen** : De **15 € à 60 € / utilisateur / mois** en SaaS selon les modules et le volume annuel de factures.\n• **Gains concrets** : Économie moyenne de 3 à 5 heures par semaine et par collaborateur, suppression des pertes de documents et respect total des obligations 2026.`;
+      } else {
+        reply = `Bonjour ! Je suis DocuBot, l'assistant expert de Documatch Lab, spécialiste de la GED et de la facture électronique 2026.\n\nJe peux vous éclairer sur les obligations réglementaires (PDP, PPF, Factur-X), les critères de choix d'un logiciel GED, ou vous aider à interpréter vos résultats de diagnostic. Comment puis-je vous renseigner ?`;
+      }
+    } else if (currentLang === "de") {
+      if (qLower.includes("frist") || qLower.includes("datum") || qLower.includes("wann") || qLower.includes("pflicht") || qLower.includes("2025") || qLower.includes("2026") || qLower.includes("2027") || qLower.includes("2028") || qLower.includes("wachstum")) {
+        reply = `**Fahrplan der E-Rechnungspflicht in Deutschland (Wachstumschancengesetz):**\n\n• **1. Januar 2025**: Gesetzliche **Empfangspflicht** für elektronische Rechnungen für alle inländischen B2B-Unternehmen.\n• **1. Januar 2027**: **Ausstellungspflicht** für Unternehmen mit einem Vorjahresumsatz von mehr als 800.000 €.\n• **1. Januar 2028**: Vollständige **Ausstellungspflicht** für alle übrigen Unternehmen und KMU.\n\nEin GoBD-konformes Dokumentenmanagement-System (DMS) sichert Ihre revisionssichere Archivierung und automatisiert Belegprozesse.`;
+      } else if (qLower.includes("gobd") || qLower.includes("xrechnung") || qLower.includes("zugferd") || qLower.includes("archiv") || qLower.includes("format")) {
+        reply = `**E-Rechnungsformate und GoBD-Archivierung in Deutschland:**\n\n• **ZUGFeRD (ab v2.0.1)**: Hybrides Format aus lesbarem PDF/A-3 und strukturierter XML-Datei.\n• **XRechnung**: Rein strukturierter XML-Datensatz, Standard für Behörden und B2G/B2B.\n• **GoBD-Konformität**: Elektronische Rechnungen müssen im Originalformat unveränderbar, vollzählig und maschinell auswertbar für 8 bis 10 Jahre archiviert werden.`;
+      } else if (qLower.includes("auswahl") || qLower.includes("dms") || qLower.includes("software") || qLower.includes("system") || qLower.includes("vergleich") || qLower.includes("erp") || qLower.includes("sap") || qLower.includes("datev")) {
+        reply = `**Auswahl des passenden DMS-Systems:**\n\n• **ERP- und Fibu-Schnittstellen**: Nahtlose Anbindung an DATEV, SAP, Microsoft Dynamics 365, Sage oder Lexware.\n• **Automatische Belegerkennung (OCR)**: Fehlerfreie Extraktion von Rechnungsdaten und Steuersätzen.\n• **Digitale Freigabeprozesse (Workflows)**: Schnelle Genehmigung von Rechnungen und Verträgen per Mausklick.\n\nDocumatch vergleicht über 200 DMS-Lösungen unabhängig und kostenlos für Sie.`;
+      } else if (qLower.includes("kosten") || qLower.includes("preis") || qLower.includes("roi") || qLower.includes("nutzen") || qLower.includes("gebühr")) {
+        reply = `**Kosten und Wirtschaftlichkeit (ROI) eines DMS:**\n\n• **Documatch Diagnose**: **100% kostenlos** und unverbindlich.\n• **Softwarekosten**: Typischerweise zwischen **15 € und 55 € pro Nutzer/Monat** im Cloud-Abo.\n• **Wirtschaftlicher Nutzen**: Zeitersparnis von ca. 3 bis 5 Stunden pro Mitarbeiter/Woche bei der Belegbearbeitung und vollständige Rechtssicherheit vor dem Finanzamt.`;
+      } else {
+        reply = `Guten Tag! Ich bin DocuBot, Ihr KI-Berater von Documatch Lab für Dokumentenmanagement (DMS), GoBD und die E-Rechnungspflicht.\n\nWie kann ich Ihnen bei Fristen, Schnittstellen zu Ihrem ERP/DATEV oder der Auswahl des besten Systems behilflich sein?`;
+      }
+    } else if (currentLang === "nl") {
+      if (qLower.includes("datum") || qLower.includes("wanneer") || qLower.includes("deadline") || qLower.includes("peppol") || qLower.includes("verplicht") || qLower.includes("2026") || qLower.includes("overheid")) {
+        reply = `**E-invoicing en Peppol Verplichtingen in Nederland & Europa:**\n\n• **Overheid (B2G)**: E-invoicing via het **Peppol-netwerk** is al verplicht voor alle leveranciers aan de Rijksoverheid.\n• **B2B Uitrol (ViDA)**: Gefaseerde Europese harmonisatie (VAT in the Digital Age) met verplichte gestructureerde e-facturatie voor bedrijven.\n• **DMS-voordeel**: Automatische validatie van Peppol BIS Billing 3.0 en UBL-facturen direct in uw administratie.`;
+      } else if (qLower.includes("peppol") || qLower.includes("ubl") || qLower.includes("nlcius") || qLower.includes("formaat")) {
+        reply = `**Standaarden en Formaten (Peppol, UBL, NLCIUS):**\n\n• **UBL 2.1 (Universal Business Language)**: Het universele XML-formaat voor foutloze digitale factuurverwerking.\n• **NLCIUS**: De specifieke Nederlandse toepassing van de Europese e-invoicing norm EN 16931.\n• **Peppol Access Point**: Veilige, gecertificeerde uitwisseling zonder risico op factuurfraude of onderschepping.`;
+      } else if (qLower.includes("dms") || qLower.includes("kiezen") || qLower.includes("software") || qLower.includes("systeem") || qLower.includes("vergelijk") || qLower.includes("erp") || qLower.includes("exact") || qLower.includes("afas")) {
+        reply = `**DMS-software selectie en ERP-koppelingen:**\n\n• **ERP-integratie**: Directe koppeling met Exact Online, AFAS, SAP, Microsoft Dynamics of Twinfield.\n• **Slimme OCR-herkenning**: Automatisch inlezen van factuurregels en btw-bedragen.\n• **Digitale goedkeuringsflow**: Snelle accordering van inkoopfacturen door bevoegde managers.\n\nDocumatch helpt u onafhankelijk het meest geschikte DMS voor uw organisatie te selecteren.`;
+      } else if (qLower.includes("kost") || qLower.includes("prijs") || qLower.includes("roi") || qLower.includes("tarief") || qLower.includes("gratis")) {
+        reply = `**Kosten en Rendement (ROI) van een DMS:**\n\n• **Documatch Diagnose**: **100% gratis** en direct inzicht.\n• **DMS softwareprijzen**: Gemiddeld tussen **€ 15 en € 50 per gebruiker/maand** (Cloud SaaS).\n• **Rendement**: Bespaart gemiddeld 4 uur per week per medewerker op administratieve handelingen en voorkomt zoekgeraakte documenten.`;
+      } else {
+        reply = `Hallo! Ik ben DocuBot, de AI-adviseur van Documatch Lab voor Document Management Systemen (DMS) en E-invoicing.\n\nWaarmee kan ik u helpen op het gebied van Peppol, softwarekeuze of de audit van uw documentprocessen?`;
+      }
+    } else {
+      if (qLower.includes("date") || qLower.includes("deadline") || qLower.includes("when") || qLower.includes("mandate") || qLower.includes("2026") || qLower.includes("reform")) {
+        reply = `**European B2B E-Invoicing Deadlines & Mandates:**\n\n• **France**: Mandatory reception for all businesses on Sept 1, 2026; mandatory issuance for large/mid companies (Sept 2026) and SMEs (Sept 2027).\n• **Spain (Crea y Crece & Veri*Factu)**: Mandatory B2B electronic invoicing starting with large enterprises and expanding to SMEs.\n• **Germany (Wachstumschancengesetz)**: Mandatory B2B e-invoice reception since Jan 2025; phased issuance starting 2027/2028.\n• **EU ViDA & Peppol**: Harmonized standard (EN 16931) and real-time digital reporting across member states.`;
+      } else if (qLower.includes("pdp") || qLower.includes("peppol") || qLower.includes("format") || qLower.includes("ubl") || qLower.includes("standard")) {
+        reply = `**Technical Formats & Platforms:**\n\n• **Universal Standards**: UBL 2.1, CII, and hybrid Factur-X / ZUGFeRD (PDF/A-3 + XML).\n• **Peppol Network**: The 4-corner secure e-delivery network standard across Europe.\n• **Compliance Features**: Cryptographic hashes, digital audit trails, and automated status lifecycle tracking (Submitted, Approved, Paid).`;
+      } else if (qLower.includes("choose") || qLower.includes("dms") || qLower.includes("software") || qLower.includes("solution") || qLower.includes("compare") || qLower.includes("erp") || qLower.includes("sap")) {
+        reply = `**Key Criteria for Selecting a Document Management System (DMS):**\n\n• **ERP & Accounting Connectors**: Bi-directional integration with SAP, Sage, Microsoft Dynamics 365, Odoo, NetSuite, QuickBooks.\n• **AI OCR & Data Capture**: Automatic line-item and header extraction with high precision.\n• **Automated Approval Workflows**: Digital sign-offs and customizable routing rules.\n• **Certified Archiving**: Compliant long-term storage preserving legal authenticity.\n\nDocumatch provides 100% neutral comparisons across 200+ DMS platforms to identify your ideal fit.`;
+      } else if (qLower.includes("price") || qLower.includes("cost") || qLower.includes("pricing") || qLower.includes("roi") || qLower.includes("free")) {
+        reply = `**DMS Pricing & Return on Investment (ROI):**\n\n• **Documatch Lab Diagnostic**: **100% free** and instant.\n• **Cloud DMS Costs**: Typically ranges from **$18 to $55 / user / month** depending on document volume and OCR capabilities.\n• **Measurable ROI**: Saves an average of 3–5 hours per employee each week in invoice routing and approval, achieving payback within 6 months.`;
+      } else {
+        reply = `Hello! I am DocuBot, the AI Document Management & 2026 E-Invoicing Compliance Advisor for Documatch Lab.\n\nHow can I assist you with regulatory deadlines, DMS selection, ERP connectors, or your compliance diagnostic?`;
+      }
+    }
+
+    return res.json({ reply });
+  } catch (error: any) {
+    console.error("Chat API handler error:", error);
+    return res.status(500).json({ error: error.message || "Chat service error" });
   }
 });
 

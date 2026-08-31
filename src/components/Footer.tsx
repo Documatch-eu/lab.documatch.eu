@@ -27,12 +27,14 @@ export const Footer: React.FC<FooterProps> = ({
           <div className="space-y-4">
             <div className="flex items-center gap-2.5">
               <Logo size="sm" />
-              <span className="font-sans font-bold text-2xl text-white leading-none tracking-tight">
-                Docu<span className="text-[#2563eb]">match</span>
-              </span>
-              <span className="text-[11px] font-bold tracking-wider text-[#f59e0b] uppercase bg-[#2e3748] border border-[#f59e0b] rounded-[6px] px-2 py-0.5 leading-none">
-                LAB
-              </span>
+              <div className="flex flex-col items-start justify-center">
+                <span className="font-sans font-bold text-2xl text-[#fbbf24] leading-none tracking-tight">
+                  LAB
+                </span>
+                <span className="text-[12px] font-medium text-white leading-none mt-1">
+                  by Documatch
+                </span>
+              </div>
             </div>
             <p className="text-white/40 leading-relaxed max-w-xs">
               {TRANSLATIONS['footer.brand.desc'][currentLang]}

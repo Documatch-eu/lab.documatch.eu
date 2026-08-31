@@ -53,6 +53,20 @@ export const TRANSLATIONS: TranslationSet = {
     de: 'Vollständigen Leitfaden lesen',
     nl: 'Lees de volledige gids'
   },
+  'btn.home': {
+    fr: 'Accueil',
+    es: 'Inicio',
+    en: 'Home',
+    de: 'Startseite',
+    nl: 'Startpagina'
+  },
+  'menu.language': {
+    fr: 'Langue / Language',
+    es: 'Idioma / Language',
+    en: 'Language / Langue',
+    de: 'Sprache / Language',
+    nl: 'Taal / Language'
+  },
   'btn.start': {
     fr: 'Évaluer ma maturité documentaire',
     es: 'Evaluar mi madurez documental',

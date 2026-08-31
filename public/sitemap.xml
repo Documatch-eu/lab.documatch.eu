@@ -2,61 +2,74 @@
 <urlset xmlns="http://www.sitemap.org/schemas/sitemap/0.9"
         xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
-  <!-- Main Home & Diagnostic Tool -->
+  <!-- French Version (Default) -->
   <url>
-    <loc>https://documatch.eu/</loc>
-    <lastmod>2026-08-11</lastmod>
+    <loc>https://www.documatch.eu/#/fr</loc>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
-    <xhtml:link rel="alternate" hreflang="fr" href="https://documatch.eu/?lang=fr" />
-    <xhtml:link rel="alternate" hreflang="es" href="https://documatch.eu/?lang=es" />
-    <xhtml:link rel="alternate" hreflang="en" href="https://documatch.eu/?lang=en" />
-    <xhtml:link rel="alternate" hreflang="de" href="https://documatch.eu/?lang=de" />
-    <xhtml:link rel="alternate" hreflang="nl" href="https://documatch.eu/?lang=nl" />
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.documatch.eu/#/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.documatch.eu/#/es" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.documatch.eu/#/en" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.documatch.eu/#/de" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.documatch.eu/#/nl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.documatch.eu/#/fr" />
   </url>
 
-  <!-- Regional Diagnostic Variants -->
+  <!-- Spanish Version -->
   <url>
-    <loc>https://documatch.eu/?country=fr</loc>
-    <lastmod>2026-08-11</lastmod>
+    <loc>https://www.documatch.eu/#/es</loc>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.documatch.eu/#/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.documatch.eu/#/es" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.documatch.eu/#/en" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.documatch.eu/#/de" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.documatch.eu/#/nl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.documatch.eu/#/fr" />
   </url>
+
+  <!-- English Version -->
   <url>
-    <loc>https://documatch.eu/?country=es</loc>
-    <lastmod>2026-08-11</lastmod>
+    <loc>https://www.documatch.eu/#/en</loc>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.documatch.eu/#/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.documatch.eu/#/es" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.documatch.eu/#/en" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.documatch.eu/#/de" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.documatch.eu/#/nl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.documatch.eu/#/fr" />
   </url>
+
+  <!-- German Version -->
   <url>
-    <loc>https://documatch.eu/?country=de</loc>
-    <lastmod>2026-08-11</lastmod>
+    <loc>https://www.documatch.eu/#/de</loc>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.documatch.eu/#/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.documatch.eu/#/es" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.documatch.eu/#/en" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.documatch.eu/#/de" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.documatch.eu/#/nl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.documatch.eu/#/fr" />
   </url>
+
+  <!-- Dutch Version -->
   <url>
-    <loc>https://documatch.eu/?country=nl</loc>
-    <lastmod>2026-08-11</lastmod>
+    <loc>https://www.documatch.eu/#/nl</loc>
+    <lastmod>2026-08-20</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.9</priority>
-  </url>
-  <url>
-    <loc>https://documatch.eu/?country=be</loc>
-    <lastmod>2026-08-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://documatch.eu/?country=ch</loc>
-    <lastmod>2026-08-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
-  </url>
-  <url>
-    <loc>https://documatch.eu/?country=lu</loc>
-    <lastmod>2026-08-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="fr" href="https://www.documatch.eu/#/fr" />
+    <xhtml:link rel="alternate" hreflang="es" href="https://www.documatch.eu/#/es" />
+    <xhtml:link rel="alternate" hreflang="en" href="https://www.documatch.eu/#/en" />
+    <xhtml:link rel="alternate" hreflang="de" href="https://www.documatch.eu/#/de" />
+    <xhtml:link rel="alternate" hreflang="nl" href="https://www.documatch.eu/#/nl" />
+    <xhtml:link rel="alternate" hreflang="x-default" href="https://www.documatch.eu/#/fr" />
   </url>
 
 </urlset>
